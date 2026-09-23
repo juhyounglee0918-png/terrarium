@@ -44,12 +44,15 @@ const fragment = /* glsl */ `
     vec2 duv;
     vec3 T, B, Nsurf;
     float u = 0.0;
+    float algae = 0.0;
     if (uMode == 0) {
       float az = atan(vLocal.x, -vLocal.z);
       if (az < 0.0) az += 6.28318530718;
       u = az / 6.28318530718;
       float v = clamp((vLocal.y - uBase) / uAirHeight, 0.0, 1.0);
-      film = texture2D(uFilm, vec2(u, v)).r;
+      vec4 fv = texture2D(uFilm, vec2(u, v));
+      film = fv.r;
+      algae = fv.g;
       duv = vec2(u * uRepeat.x, v * uRepeat.y);
       Nsurf = normalize(vec3(-vLocal.x, 0.0, -vLocal.z));
       T = normalize(vec3(cos(az), 0.0, sin(az)));
@@ -98,8 +101,13 @@ const fragment = /* glsl */ `
     vec3 dropCol = vec3(0.9, 0.94, 0.97) * (uAmbient * 1.2 + uSunColor * 0.4) + uSunColor * (spec * 3.0 + focus * 0.8);
     float dropA = vis * 0.04 + rim * 0.28 * clamp(lum, 0.25, 1.0) + spec * 0.85 + focus * 0.25 + track * 0.05;
 
-    float a = clamp(hazeA + dropA, 0.0, 0.92);
-    vec3 col = (hazeCol * hazeA + dropCol * dropA) / max(a, 1e-4);
+    // Green algal biofilm grows in patches where the glass stays wet and lit.
+    float patchy = smoothstep(0.15, 0.85, algae * 1.4 + (texture2D(uDrops, duv * 0.37).a - 0.3) * 0.35);
+    float algaeA = patchy * 0.6 * smoothstep(0.0, 0.08, algae);
+    vec3 algaeCol = vec3(0.22, 0.42, 0.14) * (uAmbient * 1.2 + uSunColor * 0.5);
+
+    float a = clamp(hazeA + dropA + algaeA, 0.0, 0.95);
+    vec3 col = (hazeCol * hazeA + dropCol * dropA + algaeCol * algaeA) / max(a, 1e-4);
     col = mix(col, col * 0.45, rim * 0.7);
     gl_FragColor = vec4(col, a);
     #include <tonemapping_fragment>
@@ -144,8 +152,11 @@ export function filmTexture(sectors: number, bands: number): THREE.DataTexture {
   return t;
 }
 
-export function writeFilm(t: THREE.DataTexture, film: ArrayLike<number>): void {
+export function writeFilm(t: THREE.DataTexture, film: ArrayLike<number>, algae?: ArrayLike<number>): void {
   const data = t.image.data as Uint8Array;
-  for (let i = 0; i < film.length; i++) data[i * 4] = Math.round(Math.min(1, Math.max(0, film[i])) * 255);
+  for (let i = 0; i < film.length; i++) {
+    data[i * 4] = Math.round(Math.min(1, Math.max(0, film[i])) * 255);
+    data[i * 4 + 1] = algae ? Math.round(Math.min(1, Math.max(0, algae[i])) * 255) : 0;
+  }
   t.needsUpdate = true;
 }

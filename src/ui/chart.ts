@@ -4,6 +4,7 @@ export interface SeriesSpec {
   key: HistorySeries;
   label: string;
   color: string;
+  scale?: number; // multiply values for display
 }
 
 export interface ChartSpec {
@@ -24,7 +25,7 @@ export class Chart {
   constructor(
     private canvas: HTMLCanvasElement,
     private spec: ChartSpec,
-    private startHour: number,
+    private startHour: () => number,
   ) {
     this.ctx = canvas.getContext('2d')!;
   }
@@ -62,12 +63,12 @@ export class Chart {
     if (this.spec.min === undefined || this.spec.max === undefined) {
       for (const s of visible)
         for (const ser of this.spec.series) {
-          const v = s.values[ser.key];
+          const v = s.values[ser.key] * (ser.scale ?? 1);
           if (this.spec.min === undefined) lo = Math.min(lo, v);
           if (this.spec.max === undefined) hi = Math.max(hi, v);
         }
       const span = Math.max(hi - lo, 1e-6);
-      if (this.spec.min === undefined) lo -= span * 0.08;
+      if (this.spec.min === undefined) lo = lo >= 0 ? Math.max(0, lo - span * 0.08) : lo - span * 0.08;
       if (this.spec.max === undefined) hi += span * 0.08;
     }
     const X = (t: number) => padL + ((t - tStart) / span) * pw;
@@ -101,7 +102,7 @@ export class Chart {
       g.stroke();
       g.fillText(v.toFixed(Math.abs(hi - lo) < 5 ? 1 : 0), 2, y + 3);
     }
-    const offset = this.startHour * 3600;
+    const offset = this.startHour() * 3600;
     const firstMidnight = Math.ceil((tStart + offset) / 86400) * 86400 - offset;
     for (let t = firstMidnight; t <= tEnd; t += 86400) {
       const x = X(t);
@@ -118,7 +119,7 @@ export class Chart {
       g.beginPath();
       visible.forEach((s, i) => {
         const x = X(s.t);
-        const y = Y(Math.min(hi, Math.max(lo, s.values[ser.key])));
+        const y = Y(Math.min(hi, Math.max(lo, s.values[ser.key] * (ser.scale ?? 1))));
         if (i === 0) g.moveTo(x, y);
         else g.lineTo(x, y);
       });

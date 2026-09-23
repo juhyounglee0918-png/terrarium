@@ -383,3 +383,37 @@ export function puffTexture(): THREE.CanvasTexture {
   t.colorSpace = THREE.SRGBColorSpace;
   return t;
 }
+
+/** Weathered granite-like stone with lichen specks. */
+export function stoneTexture(): THREE.CanvasTexture {
+  const [c, g] = canvas(512);
+  const rnd = makeRandom(61);
+  g.fillStyle = '#7b7771';
+  g.fillRect(0, 0, 512, 512);
+  for (let i = 0; i < 14000; i++) {
+    const v = 70 + rnd() * 110;
+    g.fillStyle = `rgba(${v},${v - 4},${v - 8},${0.25 + rnd() * 0.4})`;
+    g.fillRect(rnd() * 512, rnd() * 512, 1 + rnd() * 3, 1 + rnd() * 3);
+  }
+  for (let i = 0; i < 60; i++) {
+    g.fillStyle = `rgba(${rnd() > 0.5 ? '150,160,120' : '200,195,170'},${0.15 + rnd() * 0.2})`;
+    g.beginPath();
+    g.arc(rnd() * 512, rnd() * 512, 3 + rnd() * 14, 0, Math.PI * 2);
+    g.fill();
+  }
+  g.strokeStyle = 'rgba(40,38,35,0.35)';
+  for (let i = 0; i < 25; i++) {
+    g.lineWidth = 0.5 + rnd();
+    g.beginPath();
+    let x = rnd() * 512;
+    let y = rnd() * 512;
+    g.moveTo(x, y);
+    for (let k = 0; k < 6; k++) {
+      x += (rnd() - 0.5) * 60;
+      y += (rnd() - 0.5) * 60;
+      g.lineTo(x, y);
+    }
+    g.stroke();
+  }
+  return toTexture(c, 1, true);
+}

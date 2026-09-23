@@ -10,7 +10,7 @@
     <canvas id="view"></canvas>
 
     <header class="panel top">
-      <div class="brand">테라리움 <span class="tag">M1 · 물리 환경</span></div>
+      <div class="brand">테라리움 <span class="tag" id="preset-name">열대 밀폐형</span></div>
       <div class="clock"><span id="clock-day">1일차</span> <span id="clock-time">06:00</span> <span id="weather" class="muted"></span></div>
       <div class="speed" role="group" aria-label="시간 속도">
         <button data-speed="0" title="일시정지">⏸</button>
@@ -22,9 +22,16 @@
       </div>
     </header>
 
-    <aside class="panel sensors" id="sensors">
-      <button class="collapse" id="toggle-sensors" aria-label="센서 패널 접기">센서</button>
-      <div class="sensor-body">
+    <section class="panel advice" id="advice" aria-live="polite"></section>
+
+    <aside class="panel side" id="side">
+      <nav class="tabs" role="tablist">
+        <button data-tab="sensors" class="on">센서</button>
+        <button data-tab="life">생물</button>
+        <button data-tab="goals">도전</button>
+        <button data-tab="dex">도감</button>
+      </nav>
+      <div class="tab-body" data-body="sensors">
         <section>
           <h3>공기</h3>
           <dl>
@@ -32,9 +39,9 @@
             <dt>상대습도</dt><dd id="s-rh">–</dd>
             <dt>이슬점</dt><dd id="s-dew">–</dd>
             <dt>증기압차 (VPD)</dt><dd id="s-vpd">–</dd>
-            <dt>절대습도</dt><dd id="s-abs">–</dd>
             <dt>CO₂</dt><dd id="s-co2">–</dd>
             <dt>O₂</dt><dd id="s-o2">–</dd>
+            <dt>CH₄</dt><dd id="s-ch4">–</dd>
           </dl>
         </section>
         <section>
@@ -43,42 +50,64 @@
             <dt>유리 온도</dt><dd id="s-glass">–</dd>
             <dt>김서림</dt><dd id="s-fog">–</dd>
             <dt>광량 (PAR)</dt><dd id="s-par">–</dd>
-            <dt>태양 고도</dt><dd id="s-sun">–</dd>
             <dt>실내 온도</dt><dd id="s-room">–</dd>
           </dl>
         </section>
         <section>
           <h3>흙 (위 → 아래)</h3>
           <div id="s-soil"></div>
+          <dl>
+            <dt>NH₄⁺ / NO₃⁻</dt><dd id="s-n">–</dd>
+            <dt>세균 / 곰팡이</dt><dd id="s-microbes">–</dd>
+          </dl>
         </section>
         <section>
           <h3>흐름</h3>
           <dl>
-            <dt>흙 증발</dt><dd id="s-evap">–</dd>
+            <dt>광합성</dt><dd id="s-photo">–</dd>
+            <dt>호흡 (흙·동물)</dt><dd id="s-resp">–</dd>
+            <dt>증발 / 증산</dt><dd id="s-evap">–</dd>
             <dt>유리 응결</dt><dd id="s-cond">–</dd>
-            <dt>흙 호흡</dt><dd id="s-resp">–</dd>
           </dl>
         </section>
         <section class="ledger">
           <h3>보존 장부</h3>
           <dl>
-            <dt>물 오차</dt><dd id="s-lw">–</dd>
-            <dt>탄소 오차</dt><dd id="s-lc">–</dd>
+            <dt>물 · 탄소 · 질소 오차</dt><dd id="s-ledger">–</dd>
             <dt>계산 속도</dt><dd id="s-sps">–</dd>
           </dl>
         </section>
       </div>
+      <div class="tab-body" data-body="life" hidden>
+        <section><h3>식물</h3><div id="life-plants"></div></section>
+        <section><h3>동물</h3><div id="life-fauna"></div></section>
+        <section>
+          <h3>표면</h3>
+          <dl>
+            <dt>이끼 피복</dt><dd id="life-moss">–</dd>
+            <dt>곰팡이 피복</dt><dd id="life-mould">–</dd>
+            <dt>낙엽</dt><dd id="life-litter">–</dd>
+          </dl>
+        </section>
+      </div>
+      <div class="tab-body" data-body="goals" hidden><div id="goals"></div><h3 class="mt">기록</h3><ol id="log" class="log"></ol></div>
+      <div class="tab-body" data-body="dex" hidden><div id="dex"></div></div>
     </aside>
 
-    <section class="panel charts">
+    <section class="panel charts" id="charts">
       <canvas id="chart-temp"></canvas>
       <canvas id="chart-hum"></canvas>
       <canvas id="chart-co2"></canvas>
+      <canvas id="chart-life"></canvas>
     </section>
 
+    <div id="toasts" class="toasts" aria-live="polite"></div>
+
     <footer class="panel controls">
-      <button id="act-mist" title="유리와 흙에 10 g 분무">💧 분무</button>
-      <button id="act-water" title="흙에 100 mL 물 주기">🫗 물 주기</button>
+      <div class="group">
+        <button id="act-mist" title="유리와 이끼, 흙에 10 g 분무">💧 분무</button>
+        <button id="act-water" title="흙에 100 mL 물 주기">🫗 물</button>
+      </div>
       <label>뚜껑
         <select id="sel-lid">
           <option value="sealed">밀봉</option>
@@ -98,8 +127,19 @@
       <label class="range">실내 <output id="room-out">22 °C</output>
         <input id="room-temp" type="range" min="12" max="32" step="0.5" value="22" />
       </label>
-      <button id="act-reset" class="ghost" title="처음부터 다시">↺ 초기화</button>
+      <div class="group">
+        <button id="menu-add" title="식물·동물·재료 넣기">＋ 넣기</button>
+        <button id="menu-care" title="관리 도구">🧤 관리</button>
+      </div>
+      <div class="group right">
+        <button id="act-macro" title="흙 표면 가까이">🔍 접사</button>
+        <button id="act-rec" title="타임랩스 녹화">⏺ 녹화</button>
+        <button id="menu-game" title="새 게임 · 저장 · 불러오기">☰</button>
+      </div>
     </footer>
+
+    <div id="popover" class="panel popover" hidden></div>
+    <div id="mode-hint" class="mode-hint" hidden></div>
 
     <script type="module" src="/src/main.ts"></script>
   </body>
