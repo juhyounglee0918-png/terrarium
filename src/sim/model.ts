@@ -38,8 +38,12 @@ const H_IN = 3.0; // W/m²K, natural convection inside the jar
 const H_OUT = 8.5; // W/m²K, outer surface convection + long-wave
 const U_TABLE = 3.0; // W/m²K, jar base to table
 const EMISSIVITY = 0.93;
-const FILM_HOLD_WALL = 0.06; // kg/m² before droplets coalesce and run down
-const FILM_HOLD_LID = 0.04; // kg/m² before drips fall from the lid
+/**
+ * Water a surface holds as droplets before they coalesce and run off (kg/m²). Sliding starts at
+ * droplet radii of ~2–3 mm; at ~55 % coverage and cap-shaped drops that is a few hundred g/m².
+ */
+export const FILM_HOLD_WALL = 0.3;
+export const FILM_HOLD_LID = 0.15;
 const C_MOLAR = 0.012011; // kg C / mol
 const K_LABILE = 0.03 / SECONDS_PER_DAY; // 1/s at 20 °C
 const K_HUMUS = 3e-5 / SECONDS_PER_DAY; // 1/s at 20 °C, peat humus (half-life ≈ 60 y)

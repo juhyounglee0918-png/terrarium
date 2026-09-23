@@ -35,16 +35,18 @@ export function readout(state: SimState): Readout {
   const T = state.air.T;
   const rho = state.air.vapor / g.airVolume;
   const e = vaporPressureFromDensity(rho, T);
-  const hold = 0.02 * g.nodeArea;
+  // Micro-droplet fog is visible from roughly 1 g/m² of condensate.
+  const visible = 0.001 * g.nodeArea;
   let fogged = 0;
-  for (const f of state.glassFilm) if (f > hold * 0.05) fogged++;
+  for (const f of state.glassFilm) if (f > visible) fogged++;
   return {
     time: state.time,
     day: c.day,
     hour: c.hour,
     airT: T,
     rh: Math.min(1, relativeHumidity(rho, T)),
-    dewPoint: dewPoint(e),
+    // Air can be momentarily supersaturated next to warm wet soil; report at most the air temperature.
+    dewPoint: Math.min(dewPoint(e), T),
     vpd: vpd(rho, T),
     absHumidity: rho * 1000,
     co2ppm: (state.air.co2 / state.air.moles) * 1e6,

@@ -1,0 +1,106 @@
+<!doctype html>
+<html lang="ko">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Terrarium</title>
+    <link rel="stylesheet" href="/src/style.css" />
+  </head>
+  <body>
+    <canvas id="view"></canvas>
+
+    <header class="panel top">
+      <div class="brand">테라리움 <span class="tag">M1 · 물리 환경</span></div>
+      <div class="clock"><span id="clock-day">1일차</span> <span id="clock-time">06:00</span> <span id="weather" class="muted"></span></div>
+      <div class="speed" role="group" aria-label="시간 속도">
+        <button data-speed="0" title="일시정지">⏸</button>
+        <button data-speed="60" class="on">1분/초</button>
+        <button data-speed="600">10분/초</button>
+        <button data-speed="3600">1시간/초</button>
+        <button data-speed="21600">6시간/초</button>
+        <button data-speed="86400">1일/초</button>
+      </div>
+    </header>
+
+    <aside class="panel sensors" id="sensors">
+      <button class="collapse" id="toggle-sensors" aria-label="센서 패널 접기">센서</button>
+      <div class="sensor-body">
+        <section>
+          <h3>공기</h3>
+          <dl>
+            <dt>온도</dt><dd id="s-airT">–</dd>
+            <dt>상대습도</dt><dd id="s-rh">–</dd>
+            <dt>이슬점</dt><dd id="s-dew">–</dd>
+            <dt>증기압차 (VPD)</dt><dd id="s-vpd">–</dd>
+            <dt>절대습도</dt><dd id="s-abs">–</dd>
+            <dt>CO₂</dt><dd id="s-co2">–</dd>
+            <dt>O₂</dt><dd id="s-o2">–</dd>
+          </dl>
+        </section>
+        <section>
+          <h3>유리 · 빛</h3>
+          <dl>
+            <dt>유리 온도</dt><dd id="s-glass">–</dd>
+            <dt>김서림</dt><dd id="s-fog">–</dd>
+            <dt>광량 (PAR)</dt><dd id="s-par">–</dd>
+            <dt>태양 고도</dt><dd id="s-sun">–</dd>
+            <dt>실내 온도</dt><dd id="s-room">–</dd>
+          </dl>
+        </section>
+        <section>
+          <h3>흙 (위 → 아래)</h3>
+          <div id="s-soil"></div>
+        </section>
+        <section>
+          <h3>흐름</h3>
+          <dl>
+            <dt>흙 증발</dt><dd id="s-evap">–</dd>
+            <dt>유리 응결</dt><dd id="s-cond">–</dd>
+            <dt>흙 호흡</dt><dd id="s-resp">–</dd>
+          </dl>
+        </section>
+        <section class="ledger">
+          <h3>보존 장부</h3>
+          <dl>
+            <dt>물 오차</dt><dd id="s-lw">–</dd>
+            <dt>탄소 오차</dt><dd id="s-lc">–</dd>
+            <dt>계산 속도</dt><dd id="s-sps">–</dd>
+          </dl>
+        </section>
+      </div>
+    </aside>
+
+    <section class="panel charts">
+      <canvas id="chart-temp"></canvas>
+      <canvas id="chart-hum"></canvas>
+      <canvas id="chart-co2"></canvas>
+    </section>
+
+    <footer class="panel controls">
+      <button id="act-mist" title="유리와 흙에 10 g 분무">💧 분무</button>
+      <button id="act-water" title="흙에 100 mL 물 주기">🫗 물 주기</button>
+      <label>뚜껑
+        <select id="sel-lid">
+          <option value="sealed">밀봉</option>
+          <option value="glass" selected>유리 뚜껑</option>
+          <option value="cork">코르크</option>
+          <option value="open">열림</option>
+        </select>
+      </label>
+      <label>위치
+        <select id="sel-place">
+          <option value="windowsill">창턱 (직사광)</option>
+          <option value="nearWindow" selected>창가</option>
+          <option value="room">방 안쪽</option>
+          <option value="ledShelf">LED 선반</option>
+        </select>
+      </label>
+      <label class="range">실내 <output id="room-out">22 °C</output>
+        <input id="room-temp" type="range" min="12" max="32" step="0.5" value="22" />
+      </label>
+      <button id="act-reset" class="ghost" title="처음부터 다시">↺ 초기화</button>
+    </footer>
+
+    <script type="module" src="/src/main.ts"></script>
+  </body>
+</html>
