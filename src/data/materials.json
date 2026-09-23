@@ -1,0 +1,32 @@
+{
+  "_doc": "Substrate materials. Hydraulic values are representative of horticultural media ranges (see docs/RESEARCH.md §2.1); confidence noted per entry.",
+  "materials": [
+    {
+      "id": "leca",
+      "name": "LECA 배수층",
+      "thetaS": 0.45, "thetaR": 0.02, "alpha": 60, "n": 3.0, "ks": 0.002,
+      "bulkDensity": 350, "cpSolid": 840, "kDry": 0.12, "kSat": 0.7,
+      "albedo": 0.3, "labileC": 0, "humusC": 0,
+      "color": "#b0643a",
+      "confidence": "low"
+    },
+    {
+      "id": "charcoal",
+      "name": "활성탄",
+      "thetaS": 0.6, "thetaR": 0.05, "alpha": 20, "n": 2.0, "ks": 0.0001,
+      "bulkDensity": 250, "cpSolid": 1000, "kDry": 0.08, "kSat": 0.5,
+      "albedo": 0.05, "labileC": 0, "humusC": 0,
+      "color": "#1c1c1e",
+      "confidence": "low"
+    },
+    {
+      "id": "substrate",
+      "name": "피트/코이어 배양토",
+      "thetaS": 0.85, "thetaR": 0.1, "alpha": 8, "n": 1.6, "ks": 0.00001,
+      "bulkDensity": 150, "cpSolid": 1900, "kDry": 0.06, "kSat": 0.5,
+      "albedo": 0.1, "labileC": 0.4, "humusC": 65,
+      "color": "#3b2a1e",
+      "confidence": "medium"
+    }
+  ]
+}
