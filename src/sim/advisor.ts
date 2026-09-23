@@ -104,6 +104,15 @@ export function advise(state: SimState, r: Readout): Advice[] {
       fix: '분무하면 몇 분 안에 다시 광합성을 시작합니다.',
     });
   }
+  const shredders = state.agents.filter((a) => ['porcellio', 'oxidus', 'dendrobaena'].includes(a.species)).length;
+  if (shredders > 0 && r.litter < 0.15) {
+    out.push({
+      level: 'warn',
+      title: '청소부의 먹이가 떨어졌어요',
+      why: `표면 낙엽 ${r.litter.toFixed(2)} g C. 쥐며느리·노래기는 썩은 낙엽을 먹고 잘게 부수어 미생물 분해를 돕습니다. 먹이가 없으면 체중이 줄고 번식을 멈춥니다.`,
+      fix: '마른 낙엽을 한 줌 넣어 주세요.',
+    });
+  }
   if (top.theta > m.thetaS * 0.95) {
     out.push({ level: 'warn', title: '흙이 물에 잠겼어요', why: '공극이 물로 차면 뿌리와 미생물이 쓸 산소가 막힙니다.', fix: '물 주기를 멈추세요.' });
   }

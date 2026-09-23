@@ -82,7 +82,7 @@ export const PRESETS: Preset[] = [
       const c = defaultConfig();
       c.layers = [
         { material: 'leca', thickness: 0.02, initialHead: -1 },
-        { material: 'sand', thickness: 0.07, initialHead: -3 },
+        { material: 'sand', thickness: 0.07, initialHead: -0.15 },
       ];
       c.lid = 'open';
       c.lighting.placement = 'windowsill';

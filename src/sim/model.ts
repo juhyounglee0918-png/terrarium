@@ -25,7 +25,7 @@ import { effectiveSaturation, headFromTheta, thetaFromHead } from './physics/soi
 import { algaeCarbon, algaeGasExchange, algaeNitrogen, algaeBiology } from './bio/algae';
 import { faunaBiology, faunaCarbon, faunaNitrogen, seedFauna } from './bio/fauna';
 import { mossBiology, mossCarbon, mossGasExchange, mossNitrogen, mossWater } from './bio/moss';
-import { createPlant, plantBiology, plantCarbon, plantGasExchange, type TranspiringSurface } from './bio/plants';
+import { createPlant, plantBiology, plantCarbon, plantGasExchange, tissueCapacity, type TranspiringSurface } from './bio/plants';
 import { CN, soilBiology } from './bio/soilbio';
 import { cellAt, createSurface, seedMoss, usableCells } from './bio/surface';
 import { nextRandom } from './rng';
@@ -169,8 +169,12 @@ export function createState(cfg: TerrariumConfig): SimState {
     const c = cellAt(state.surface, cfg.radius, ps.x, ps.z);
     if (!free.includes(c) && !state.surface.inside[c]) continue;
     const p = createPlant(state, ps.species, ps.x, ps.z);
-    // Transplants arrive with a moist root ball: take that water from the substrate.
+    // Transplants hydrate from the substrate; in dry soil they start partly dehydrated.
     const top = state.soil[state.soil.length - 1];
+    const tm = MATERIALS[top.material];
+    const spare = Math.max(0, (top.theta - tm.thetaR - 0.02) * top.thickness * g.areaTop * RHO_WATER * 0.5);
+    p.tissueWater = Math.min(p.tissueWater, spare);
+    p.water = p.tissueWater / tissueCapacity(p);
     top.theta -= p.tissueWater / RHO_WATER / (top.thickness * g.areaTop);
     state.plants.push(p);
   }
@@ -178,10 +182,12 @@ export function createState(cfg: TerrariumConfig): SimState {
     const { c } = seedMoss(state, ms.species, ms.fraction);
     void c;
   }
-  // Moss arrives moist: that water comes from the substrate budget too.
-  const mw = mossWater(state);
+  // Moss arrives moist: that water comes from the substrate budget too (as much as it can spare).
   const top = state.soil[state.soil.length - 1];
-  top.theta -= mw / RHO_WATER / (top.thickness * g.areaTop);
+  const spareW = Math.max(0, (top.theta - MATERIALS[top.material].thetaR - 0.02) * top.thickness * g.areaTop * RHO_WATER * 0.5);
+  const mw = mossWater(state);
+  if (mw > spareW) state.surface.moss.water = state.surface.moss.water.map((w) => (w * spareW) / mw);
+  top.theta -= Math.min(mw, spareW) / RHO_WATER / (top.thickness * g.areaTop);
   if (cfg.initialLitterC > 0) {
     const c = cfg.initialLitterC;
     state.litter.metC += c * 0.4;

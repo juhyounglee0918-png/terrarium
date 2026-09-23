@@ -10,7 +10,7 @@
 import { C_MOLAR } from '../constants';
 import { MATERIALS } from '../config';
 import { satVaporDensity } from '../physics/psychro';
-import { headFromTheta } from '../physics/soil';
+import { headFromTheta, thetaFromHead } from '../physics/soil';
 import type { Plant, SimState, SoilLayerState } from '../types';
 import { plantParams, SPECIES, type PlantParams } from './params';
 import { cellAt, crownRadius, laiAbove, usableCells } from './surface';
@@ -165,7 +165,8 @@ export function plantGasExchange(
     const fPsi = clamp01((psiSoil - pp.psiClose) / (-3 - pp.psiClose));
     const fW = Math.min(fPsi, clamp01((p.water - 0.25) / 0.5));
     const amax = pp.amax25 * tempResponse(env.T, pp) * fN * p.health * Math.max(fCO2, 0);
-    const rd = 0.08 * pp.amax25 * q10 * la; // µmol/s, leaf dark respiration
+    // µmol/s leaf dark respiration, down-regulated under drought (CAM plants 'idle' further).
+    const rd = 0.08 * pp.amax25 * q10 * la * (pp.cam ? 0.15 + 0.85 * fW : 0.35 + 0.65 * fW);
 
     let aGross = 0; // µmol/s whole plant
     let gs: number; // mol/m²/s
@@ -196,7 +197,7 @@ export function plantGasExchange(
 
     // Maintenance respiration of stem and root (per day at 20 °C → per step).
     const q20 = Math.pow(2, (env.T - 20) / 10);
-    const rMaint = (0.004 * p.stemC + 0.01 * p.rootC) * q20 * (dt / 86400); // kg C
+    const rMaint = (0.004 * p.stemC + 0.01 * p.rootC) * q20 * (0.4 + 0.6 * fW) * (dt / 86400); // kg C
     const rLeaf = rd * dt * 1e-6 * C_MOLAR;
     const gain = aGross * dt * 1e-6 * C_MOLAR;
     p.nsc += gain - rLeaf - rMaint;
@@ -220,7 +221,7 @@ export function plantGasExchange(
     const cap = tissueCapacity(p);
     const supplyMax = KR * p.rootC * (1 - p.rootDamage) * clamp01((psiSoil - pp.psiWilt) / -pp.psiWilt) * dt;
     const refill = Math.min(supplyMax, Math.max(0, cap - p.tissueWater));
-    const got = drawRootWater(state, refill);
+    const got = drawRootWater(state, refill, pp.psiWilt);
     p.tissueWater += got;
     p.water = clamp01(p.tissueWater / cap);
 
@@ -241,13 +242,15 @@ export function plantGasExchange(
 }
 
 /** Take water from the root zone (kg); returns what was available. */
-function drawRootWater(state: SimState, kg: number): number {
+function drawRootWater(state: SimState, kg: number, psiWilt: number): number {
   if (kg <= 0) return 0;
   const area = Math.PI * state.config.radius ** 2;
   let got = 0;
   for (const { layer, w } of rootLayers(state)) {
     const m = MATERIALS[layer.material];
-    const availKg = Math.max(0, (layer.theta - m.thetaR - 0.02) * layer.thickness * area * 1000);
+    // Roots can pull water down to the plant's wilting-point potential, no further.
+    const floor = thetaFromHead(m, psiWilt);
+    const availKg = Math.max(0, (layer.theta - floor) * layer.thickness * area * 1000);
     const take = Math.min(kg * w, availKg);
     layer.theta -= take / 1000 / (layer.thickness * area);
     got += take;
@@ -299,7 +302,10 @@ export function plantBiology(state: SimState, dtd: number, env: { T: number; rh:
     if (env.rh < pp.rhMin) stress = Math.max(stress, clamp01((pp.rhMin - env.rh) / 0.2) * 0.7);
     if (p.lightAvg > pp.lightMax * 1.3) stress = Math.max(stress, clamp01((p.lightAvg / pp.lightMax - 1.3) / 1.5));
     if (p.water < 0.3) stress = Math.max(stress, clamp01((0.3 - p.water) / 0.3));
-    p.wilt = clamp01((0.75 - p.water) / 0.55);
+    // Leaves lose turgor when tissue water runs low or soil water potential nears the turgor-loss point.
+    const psi = rootZoneHead(state);
+    const soilTurgor = clamp01((psi - pp.psiWilt) / (pp.psiClose - pp.psiWilt));
+    p.wilt = clamp01((0.75 - Math.min(p.water, soilTurgor)) / 0.55);
     const damage = (p.water < 0.15 ? 0.35 : 0) + (env.T > pp.tMax + 3 ? 0.3 : 0) + (p.lightAvg > pp.lightMax * 2 ? 0.05 : 0) + p.rootDamage * 0.1;
     p.health = clamp01(p.health - damage * dtd + (stress < 0.1 && damage === 0 ? 0.05 * dtd : 0));
 

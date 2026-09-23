@@ -224,3 +224,20 @@ flowchart TB
 - Medlyn, B.E. et al. (2011). Reconciling the optimal and empirical approaches to modelling stomatal conductance. *Global Change Biology* 17:2134–2144.
 - Farquhar, G.D., von Caemmerer, S. & Berry, J.A. (1980). A biochemical model of photosynthetic CO₂ assimilation. *Planta* 149:78–90.
 - Hukka, A. & Viitanen, H. (1999). A mathematical model of mould growth on wooden material (VTT). *Wood Sci. Technol.* 33:475–485.
+
+---
+
+## 9. 모델 보정 기록 (구현하며 정한 값과 이유)
+
+| 항목 | 값 | 근거 / 이유 |
+|---|---|---|
+| 동물 대사 정규화 (MTE b₀) | 1.45×10¹⁰ W·kg⁻³ᐟ⁴ | 60 mg 쥐며느리가 20 °C에서 ≈200 µl O₂ g⁻¹ h⁻¹ (문헌 범위 148–772) |
+| 물방울 흘러내림 한계 | 유리 300 g/m², 뚜껑 150 g/m² | 반지름 2–3 mm 물방울, 피복률 약 55% |
+| 뚜껑 환기율 | 밀봉 0.003, 코르크 0.05, 유리 0.15, 열림 25 회/h | 추정(low). 밤 CO₂ 수천 ppm, 낮 100 ppm 이하로 떨어지는 밀폐 병의 거동을 재현 |
+| 원생생물·선충 섭식 반포화 | 1 kg C/m³ | 세균:원생생물 생물량 비가 10:1 이상 유지되도록 (Lotka–Volterra 평형) |
+| 표면 곰팡이 | 성장 1.2 d⁻¹, 밀도 한계 4 g C/m² | 새 테라리움 2–4주차 곰팡이 폭발 → 톡토기에 의해 억제 (§7 체크리스트 4) |
+| 가뭄 중 호흡 감소 | C3 35%, CAM 15%까지 | 가뭄 시 호흡 하향 조절, CAM idling |
+| 피토니아 기공 폐쇄 / 시듦점 | −0.4 / −1.0 MPa | 가뭄에 극히 예민한 종 (원예 관찰) |
+| 다육 조직 수분 | 하월시아 4 kg/m² 잎, 페페로미아 1.5 | 두꺼운 잎의 저수 조직 |
+
+**알려진 한계**: 공기는 한 덩어리(수직 성층 없음), 흙은 층별로만 나뉨(수평 차이 없음), P·K·pH 미구현, 식물 형태는 탄소 풀에서 절차적으로 생성(실제 가지 구조를 시뮬레이션하지 않음).

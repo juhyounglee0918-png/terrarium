@@ -433,7 +433,8 @@ function agentStep(state: SimState, a: Agent, dtd: number, env: { T: number; rh:
   const resp = metabolicC(a.bodyC, T) * dtd;
   const growth = Math.max(0, p.adultC - a.bodyC) * 0.02 * perf * dtd;
   const local = 0.6 + Math.min(0.8, s.litterWeight[cellAt(s, r, a.x, a.z)] * 0.3);
-  const demand = ((resp + growth) / p.assim) * activity * local * 1.3;
+  // Light-shy animals hide by day but make up for it foraging at night.
+  const demand = ((resp + growth) / p.assim) * (0.85 + 0.35 * Math.min(1, local)) * (activity > 0.05 ? 1.15 : 0.6);
   const fed = feed(state, a.species, p.diet, demand, p.assim, a.x, a.z);
   const m = metabolise(state, fed.c, fed.n, Math.min(resp, a.bodyC * 0.5 + fed.c), p.cn);
   a.bodyC = Math.max(0, a.bodyC + m.net);

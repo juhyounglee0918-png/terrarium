@@ -23,7 +23,7 @@ export interface PlantParams {
   rhMin: number; // below which leaf tips scorch
   init: { leafC: number; stemC: number; rootC: number };
   mycorrhizal: boolean;
-  waterStore: number; // days of transpiration buffered in tissues
+  waterStore: number; // kg of water stored per m² of leaf beyond a thin-leaf baseline (succulence)
   rotSusceptibility: number;
   cam: boolean;
 }
