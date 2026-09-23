@@ -1,5 +1,5 @@
 import { describe, expect, it } from 'vitest';
-import { defaultConfig, type TerrariumConfig } from '../src/sim/config';
+import { bareConfig, type TerrariumConfig } from '../src/sim/config';
 import { readout } from '../src/sim/diagnostics';
 import { balance } from '../src/sim/ledger';
 import { createState, pourWater, step, type SimState } from '../src/sim/model';
@@ -13,7 +13,7 @@ function run(state: SimState, hours: number, each?: (s: SimState) => void): void
 }
 
 function make(patch: Partial<TerrariumConfig> = {}): SimState {
-  return createState({ ...defaultConfig(), ...patch });
+  return createState({ ...bareConfig(), ...patch });
 }
 
 describe('closed jar (glass lid, near window)', () => {
@@ -44,10 +44,11 @@ describe('closed jar (glass lid, near window)', () => {
     expect(Math.max(...fogAtDawn)).toBeGreaterThan(0.1);
   });
 
-  it('conserves water and carbon', () => {
+  it('conserves water, carbon and nitrogen', () => {
     const b = balance(s);
     expect(Math.abs(b.water.error)).toBeLessThan(1e-9 + b.water.stored * 1e-9);
     expect(Math.abs(b.carbon.error)).toBeLessThan(1e-9 + b.carbon.stored * 1e-9);
+    expect(Math.abs(b.nitrogen.error)).toBeLessThan(1e-9 + b.nitrogen.stored * 1e-9);
   });
 
   it('CO₂ accumulates above room level without plants (soil respiration)', () => {

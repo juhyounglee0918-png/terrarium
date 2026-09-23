@@ -16,10 +16,17 @@ export interface SoilMaterial {
   kDry: number; // thermal conductivity dry, W/(m·K)
   kSat: number; // thermal conductivity saturated, W/(m·K)
   albedo: number;
-  /** Initial carbon pools (kg C per m³ of layer). */
-  labileC: number;
-  humusC: number;
   color: string;
+  rootable: boolean;
+  /** Initial organic and mineral pools (kg C or kg N per m³ of layer). */
+  metC: number;
+  strC: number;
+  somC: number;
+  somCN: number;
+  nh4: number;
+  no3: number;
+  bact: number;
+  fung: number;
 }
 
 const SE_MIN = 1e-12;

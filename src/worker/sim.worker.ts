@@ -1,23 +1,37 @@
 /// <reference lib="webworker" />
-import { defaultConfig, MATERIALS } from '../sim/config';
+import * as A from '../sim/actions';
+import { advise } from '../sim/advisor';
+import { challengeStatus } from '../sim/challenges';
+import { MATERIALS } from '../sim/config';
 import { readout } from '../sim/diagnostics';
+import { population } from '../sim/bio/fauna';
 import { balance } from '../sim/ledger';
-import { createState, FILM_HOLD_LID, FILM_HOLD_WALL, geometry, mist, pourWater, step, type SimState } from '../sim/model';
+import { createState, step, type SimState } from '../sim/model';
+import { presetConfig } from '../sim/presets';
+import { sceneView } from '../sim/snapshot';
 import type { Action, FrameData, FromWorker, HistorySample, ToWorker } from './protocol';
 
 const HISTORY_INTERVAL = 600; // s of sim time between chart samples
 const TICK_MS = 16;
 const BUDGET_MS = 11;
+const SAVE_VERSION = 2;
 
-let state: SimState = createState(defaultConfig());
+let preset = 'tropical';
+let state: SimState = createState(presetConfig(preset));
 let speed = 60; // sim seconds per real second
 let debt = 0; // sim seconds owed
 let lastTick = performance.now();
 let nextSample = 0;
 let pending: HistorySample[] = [];
+let eventCursor = 0;
 let stepsThisSecond = 0;
 let stepsPerSecond = 0;
 let secondMark = performance.now();
+let slowTick = 0;
+let cachedAdvice: FrameData['advice'] = [];
+let cachedChallenges: FrameData['challenges'] = [];
+
+const post = (m: FromWorker, transfer: Transferable[] = []) => (self as unknown as DedicatedWorkerGlobalScope).postMessage(m, transfer);
 
 function sample(): void {
   const r = readout(state);
@@ -32,74 +46,84 @@ function sample(): void {
       co2: r.co2ppm,
       par: r.par,
       theta: (sub.theta / MATERIALS[sub.material].thetaS) * 100,
+      springtails: population(state, 'folsomia'),
+      mould: r.mouldCover * 100,
     },
   });
 }
 
+function reset(): void {
+  nextSample = 0;
+  pending = [];
+  eventCursor = state.events.length;
+}
+
 function apply(a: Action): void {
+  const r = state.config.radius;
   switch (a.kind) {
     case 'mist':
-      mist(state, a.kg);
-      break;
+      return A.mist(state, a.kg);
     case 'water':
-      pourWater(state, a.kg);
-      break;
+      return A.pourWater(state, a.kg);
     case 'lid':
-      state.config.lid = a.lid;
-      break;
+      return A.setLid(state, a.lid);
     case 'placement':
-      state.config.lighting.placement = a.placement;
-      break;
+      return A.setPlacement(state, a.placement);
     case 'roomTemp':
-      state.config.room.meanTemp = a.celsius;
-      break;
-    case 'reset': {
-      const cfg = state.config;
-      state = createState({ ...defaultConfig(), lid: cfg.lid, lighting: { ...cfg.lighting }, room: { ...cfg.room } });
-      nextSample = 0;
-      pending = [];
-      break;
-    }
+      return A.setRoomTemp(state, a.celsius);
+    case 'addPlant':
+      A.addPlant(state, a.species, Math.max(-r, Math.min(r, a.x)), Math.max(-r, Math.min(r, a.z)));
+      return;
+    case 'prune':
+      return A.prunePlant(state, a.id);
+    case 'removePlant':
+      return A.removePlant(state, a.id);
+    case 'addFauna':
+      return A.addFauna(state, a.species, a.count);
+    case 'addMoss':
+      return A.addMoss(state, a.species, 0.1);
+    case 'addLitter':
+      return A.addLeafLitter(state, 0.0008);
+    case 'removeMould':
+      return A.removeMould(state);
+    case 'fertilize':
+      return A.fertilize(state, 0.02);
+    case 'calcium':
+      return A.addCalcium(state);
+    case 'wipeGlass':
+      return A.wipeGlass(state);
+    case 'newGame':
+      preset = a.preset;
+      state = createState(presetConfig(preset));
+      reset();
+      return;
   }
 }
 
 function frame(): FrameData {
-  const g = geometry(state.config);
-  const hold = FILM_HOLD_WALL * g.nodeArea;
-  const n = state.glassFilm.length;
-  const film = new Float32Array(n);
-  const gt = new Float32Array(n);
-  for (let i = 0; i < n; i++) {
-    film[i] = Math.min(1, state.glassFilm[i] / hold);
-    gt[i] = state.glassT[i];
-  }
   const light = state.env.light;
   const b = balance(state);
+  const r = readout(state);
+  if (slowTick++ % 15 === 0) {
+    cachedAdvice = advise(state, r);
+    cachedChallenges = challengeStatus(state);
+  }
   const out: FrameData = {
-    readout: readout(state),
+    readout: r,
+    scene: sceneView(state),
     lid: state.config.lid,
     placement: state.config.lighting.placement,
-    bands: state.config.glassBands,
-    sectors: state.config.glassSectors,
-    glassFilm: film,
-    glassT: gt,
-    lidFilm: Math.min(1, state.lid.film / (FILM_HOLD_LID * g.areaTop)),
-    sun: {
-      elevation: light.sun.elevation,
-      azimuth: light.sun.azimuth,
-      direct: light.directSW,
-      diffuse: light.diffuseSW,
-      led: light.ledSW,
-    },
-    soilDepths: state.soil.map((l) => {
-      const m = MATERIALS[l.material];
-      return { material: l.material, thickness: l.thickness, saturation: Math.min(1, (l.theta - m.thetaR) / (m.thetaS - m.thetaR)) };
-    }),
-    jar: { radius: state.config.radius, height: state.config.height },
+    preset,
+    sun: { elevation: light.sun.elevation, azimuth: light.sun.azimuth, direct: light.directSW, diffuse: light.diffuseSW, led: light.ledSW },
     newHistory: pending,
+    newEvents: state.events.slice(Math.min(eventCursor, state.events.length)),
+    advice: cachedAdvice,
+    challenges: cachedChallenges,
     stepsPerSecond,
-    balanceError: { water: b.water.error, carbon: b.carbon.error },
+    balanceError: { water: b.water.error, carbon: b.carbon.error, nitrogen: b.nitrogen.error },
+    startHour: state.config.startHour,
   };
+  eventCursor = state.events.length;
   pending = [];
   return out;
 }
@@ -121,26 +145,28 @@ function tick(): void {
   lastTick = now;
   const dt = state.config.dt;
   debt += elapsed * speed;
-  // Never let debt grow unbounded when the CPU can't keep up.
   debt = Math.min(debt, speed * 0.5 + dt);
   const start = performance.now();
-  while (debt >= dt && performance.now() - start < BUDGET_MS) {
-    step(state);
-    debt -= dt;
-    stepsThisSecond++;
-    if (state.time >= nextSample) {
-      sample();
-      nextSample = state.time + HISTORY_INTERVAL;
+  try {
+    while (debt >= dt && performance.now() - start < BUDGET_MS) {
+      step(state);
+      debt -= dt;
+      stepsThisSecond++;
+      if (state.time >= nextSample) {
+        sample();
+        nextSample = state.time + HISTORY_INTERVAL;
+      }
     }
+  } catch (e) {
+    post({ type: 'error', message: String(e) });
+    speed = 0;
   }
   if (now - secondMark > 1000) {
     stepsPerSecond = stepsThisSecond;
     stepsThisSecond = 0;
     secondMark = now;
   }
-  const f = frame();
-  const msg: FromWorker = { type: 'frame', frame: f };
-  (self as unknown as DedicatedWorkerGlobalScope).postMessage(msg, [f.glassFilm.buffer, f.glassT.buffer]);
+  post({ type: 'frame', frame: frame() });
 }
 
 self.onmessage = (e: MessageEvent<ToWorker>) => {
@@ -148,6 +174,18 @@ self.onmessage = (e: MessageEvent<ToWorker>) => {
   if (m.type === 'speed') speed = m.simSecondsPerSecond;
   else if (m.type === 'action') apply(m.action);
   else if (m.type === 'advance') advance(m.seconds);
+  else if (m.type === 'save') post({ type: 'saved', json: JSON.stringify({ version: SAVE_VERSION, preset, state }) });
+  else if (m.type === 'load') {
+    try {
+      const data = JSON.parse(m.json);
+      if (data.version !== SAVE_VERSION) throw new Error('저장 파일 버전이 다릅니다');
+      state = data.state as SimState;
+      preset = data.preset ?? 'tropical';
+      reset();
+    } catch (err) {
+      post({ type: 'error', message: String(err) });
+    }
+  }
 };
 
 sample();

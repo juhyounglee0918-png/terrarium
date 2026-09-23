@@ -277,11 +277,11 @@ export function createView(canvas: HTMLCanvasElement, jar: { radius: number; hei
   const tmp = new THREE.Color();
 
   function update(f: FrameData): void {
-    writeFilm(film, f.glassFilm);
-    lidUniforms.uLidFilm.value = f.lidFilm;
+    writeFilm(film, f.scene.glassFilm);
+    lidUniforms.uLidFilm.value = f.scene.lidFilm;
 
     // Substrate darkens as it wets.
-    const sub = f.soilDepths.find((l) => l.material === 'substrate');
+    const sub = f.scene.soil.find((l) => l.material === 'substrate');
     if (sub) {
       const k = Math.pow(sub.saturation, 0.7);
       tmp.copy(SUBSTRATE_DRY).lerp(SUBSTRATE_WET, k);
@@ -291,7 +291,7 @@ export function createView(canvas: HTMLCanvasElement, jar: { radius: number; hei
     }
     // Perched water table in the drainage layer.
     for (const w of lecaWater) {
-      const leca = f.soilDepths.find((l) => l.material === 'leca');
+      const leca = f.scene.soil.find((l) => l.material === 'leca');
       const level = leca ? Math.max(0, (leca.saturation - 0.15) / 0.85) : 0;
       w.visible = level > 0.02;
       const h = Math.max(0.001, level * w.userData.thickness);

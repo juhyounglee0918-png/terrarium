@@ -1,245 +1,1490 @@
 {
-  "_doc": "Organism parameters compiled in docs/RESEARCH.md. Units: temperatures °C, times days, RH 0..1. Every entry carries sources and a confidence level (high | medium | low). 'milestone' says when the organism becomes simulated.",
-  "organisms": [
-    {
-      "id": "hypnum",
-      "name": "시트 모스",
-      "latin": "Hypnum spp.",
-      "group": "moss",
-      "model": "mat",
-      "milestone": "M2",
-      "params": { "ppfdMin": 20, "ppfdOpt": 90, "ppfdMax": 120, "poikilohydric": true, "anchorDays": 10, "spreadDays": 32 },
-      "facts": "잎과 줄기에 뿌리·관다발이 없어 몸 수분이 공기 습도와 평형을 이룸. 마르면 휴면하고 다시 젖으면 회복.",
-      "sources": ["https://nph.onlinelibrary.wiley.com/doi/10.1046/j.1469-8137.2002.00526.x", "https://ariumology.com/2026/02/13/full-spectrum-led-lighting-schedule-for-moss-growth-guide/", "https://www.theminicraft.com/blogs/moss-instructions/hypnum-moss-care-guide"],
-      "confidence": "medium"
+ "_doc": "Organism parameters compiled in docs/RESEARCH.md. Units: temperatures °C, times days, RH 0..1. Every entry carries sources and a confidence level (high | medium | low). 'milestone' says when the organism becomes simulated.",
+ "organisms": [
+  {
+   "id": "hypnum",
+   "name": "시트 모스",
+   "latin": "Hypnum spp.",
+   "group": "moss",
+   "model": "mat",
+   "milestone": "M2",
+   "params": {
+    "ppfdMin": 20,
+    "ppfdOpt": 90,
+    "ppfdMax": 120,
+    "poikilohydric": true,
+    "anchorDays": 10,
+    "spreadDays": 32
+   },
+   "facts": "잎과 줄기에 뿌리·관다발이 없어 몸 수분이 공기 습도와 평형을 이룸. 마르면 휴면하고 다시 젖으면 회복.",
+   "sources": [
+    "https://nph.onlinelibrary.wiley.com/doi/10.1046/j.1469-8137.2002.00526.x",
+    "https://ariumology.com/2026/02/13/full-spectrum-led-lighting-schedule-for-moss-growth-guide/",
+    "https://www.theminicraft.com/blogs/moss-instructions/hypnum-moss-care-guide"
+   ],
+   "confidence": "medium",
+   "sim": {
+    "kind": "moss",
+    "amax": 3.0,
+    "ppfdMin": 20,
+    "ppfdOpt": 90,
+    "ppfdMax": 120,
+    "wOpt": [
+     3,
+     8
+    ],
+    "wMax": 12,
+    "biomassMax": 0.09,
+    "spread": 0.0015,
+    "desiccationDays": 40,
+    "cn": 40
+   }
+  },
+  {
+   "id": "leucobryum",
+   "name": "쿠션 모스",
+   "latin": "Leucobryum glaucum",
+   "group": "moss",
+   "model": "mat",
+   "milestone": "M2",
+   "params": {
+    "ppfdMin": 60,
+    "ppfdOpt": 125,
+    "ppfdMax": 150,
+    "poikilohydric": true
+   },
+   "facts": "둥근 쿠션형으로 자람. 과습하면 갈변.",
+   "sources": [
+    "https://terrariumcreations.com/leucobryum-glaucum-moss-in-terrariums-care-guide-to-help-your-moss-thrive/"
+   ],
+   "confidence": "low",
+   "sim": {
+    "kind": "moss",
+    "amax": 2.5,
+    "ppfdMin": 60,
+    "ppfdOpt": 125,
+    "ppfdMax": 150,
+    "wOpt": [
+     2,
+     6
+    ],
+    "wMax": 10,
+    "biomassMax": 0.15,
+    "spread": 0.0006,
+    "desiccationDays": 25,
+    "cn": 40
+   }
+  },
+  {
+   "id": "fittonia",
+   "name": "피토니아",
+   "latin": "Fittonia albivenis",
+   "group": "plant",
+   "model": "individual",
+   "milestone": "M2",
+   "params": {
+    "lightCompensation": 8,
+    "lightSaturation": 250,
+    "tOpt": 24,
+    "medlynG1": 3.9,
+    "g0": 0.01,
+    "q10Resp": 2.0
+   },
+   "facts": "물이 부족하면 급격히 시들고, 물을 주면 몇 시간 만에 회복. 팽압 모델을 시각화하기에 이상적.",
+   "sources": [
+    "https://rseco.org/book/export/html/257.html",
+    "https://gmd.copernicus.org/articles/8/431/2015/gmd-8-431-2015.pdf"
+   ],
+   "confidence": "low",
+   "sim": {
+    "g0": 0.01,
+    "tWidth": 10,
+    "mycorrhizal": true,
+    "waterStore": 0.2,
+    "rotSusceptibility": 1.0,
+    "cam": false,
+    "leafLife": 180,
+    "amax25": 6,
+    "tOpt": 25,
+    "tMax": 35,
+    "g1": 3.9,
+    "lma": 0.013,
+    "alloc": [
+     0.55,
+     0.15,
+     0.3
+    ],
+    "cn": [
+     20,
+     50,
+     40
+    ],
+    "psiClose": -80,
+    "psiWilt": -150,
+    "maxHeight": 0.12,
+    "maxLeafArea": 0.03,
+    "lightMin": 20,
+    "lightMax": 400,
+    "rhMin": 0.5,
+    "init": {
+     "leafC": 0.0001,
+     "stemC": 3e-05,
+     "rootC": 5e-05
     },
-    {
-      "id": "leucobryum",
-      "name": "쿠션 모스",
-      "latin": "Leucobryum glaucum",
-      "group": "moss",
-      "model": "mat",
-      "milestone": "M2",
-      "params": { "ppfdMin": 60, "ppfdOpt": 125, "ppfdMax": 150, "poikilohydric": true },
-      "facts": "둥근 쿠션형으로 자람. 과습하면 갈변.",
-      "sources": ["https://terrariumcreations.com/leucobryum-glaucum-moss-in-terrariums-care-guide-to-help-your-moss-thrive/"],
-      "confidence": "low"
+    "kind": "vascular",
+    "form": "rosette"
+   }
+  },
+  {
+   "id": "pilea",
+   "name": "필레아 글라우카",
+   "latin": "Pilea glauca",
+   "group": "plant",
+   "model": "individual",
+   "milestone": "M2",
+   "params": {},
+   "facts": "작은 은청색 잎이 기어가며 퍼지는 덩굴성 식물. 성장이 빨라 밀폐 테라리움 전경에 흔히 쓰임.",
+   "sources": [
+    "https://rseco.org/book/export/html/257.html"
+   ],
+   "confidence": "low",
+   "sim": {
+    "g0": 0.01,
+    "tWidth": 10,
+    "mycorrhizal": true,
+    "waterStore": 0.2,
+    "rotSusceptibility": 1.0,
+    "cam": false,
+    "leafLife": 240,
+    "amax25": 7,
+    "tOpt": 24,
+    "tMax": 34,
+    "g1": 4.0,
+    "lma": 0.01,
+    "alloc": [
+     0.5,
+     0.25,
+     0.25
+    ],
+    "cn": [
+     20,
+     50,
+     40
+    ],
+    "psiClose": -100,
+    "psiWilt": -180,
+    "maxHeight": 0.06,
+    "maxLeafArea": 0.02,
+    "lightMin": 30,
+    "lightMax": 500,
+    "rhMin": 0.4,
+    "init": {
+     "leafC": 6e-05,
+     "stemC": 3e-05,
+     "rootC": 3e-05
     },
-    {
-      "id": "fittonia",
-      "name": "피토니아",
-      "latin": "Fittonia albivenis",
-      "group": "plant",
-      "model": "individual",
-      "milestone": "M2",
-      "params": { "lightCompensation": 8, "lightSaturation": 250, "tOpt": 24, "medlynG1": 3.9, "g0": 0.01, "q10Resp": 2.0 },
-      "facts": "물이 부족하면 급격히 시들고, 물을 주면 몇 시간 만에 회복. 팽압 모델을 시각화하기에 이상적.",
-      "sources": ["https://rseco.org/book/export/html/257.html", "https://gmd.copernicus.org/articles/8/431/2015/gmd-8-431-2015.pdf"],
-      "confidence": "low"
+    "kind": "vascular",
+    "form": "trailing"
+   }
+  },
+  {
+   "id": "selaginella",
+   "name": "부처손류",
+   "latin": "Selaginella kraussiana",
+   "group": "plant",
+   "model": "individual",
+   "milestone": "M2",
+   "params": {},
+   "facts": "양치식물의 먼 친척인 석송류. 공기 습도가 70% 아래로 떨어지면 잎끝부터 마름.",
+   "sources": [],
+   "confidence": "low",
+   "sim": {
+    "g0": 0.01,
+    "tWidth": 10,
+    "mycorrhizal": false,
+    "waterStore": 0.2,
+    "rotSusceptibility": 1.0,
+    "cam": false,
+    "leafLife": 240,
+    "amax25": 4,
+    "tOpt": 23,
+    "tMax": 32,
+    "g1": 4.5,
+    "lma": 0.008,
+    "alloc": [
+     0.55,
+     0.2,
+     0.25
+    ],
+    "cn": [
+     22,
+     50,
+     40
+    ],
+    "psiClose": -60,
+    "psiWilt": -120,
+    "maxHeight": 0.08,
+    "maxLeafArea": 0.02,
+    "lightMin": 15,
+    "lightMax": 250,
+    "rhMin": 0.7,
+    "init": {
+     "leafC": 5e-05,
+     "stemC": 2e-05,
+     "rootC": 2e-05
     },
-    {
-      "id": "tradescantia",
-      "name": "트라데스칸티아 (스파이더워트)",
-      "latin": "Tradescantia spp.",
-      "group": "plant",
-      "model": "individual",
-      "milestone": "M2",
-      "params": { "lightCompensation": 10, "lightSaturation": 400, "tOpt": 22, "medlynG1": 4.0, "g0": 0.01, "q10Resp": 2.0 },
-      "facts": "David Latimer의 병 정원(1960~) 주인공. 빛이 부족하면 웃자람이 뚜렷함.",
-      "sources": ["https://en.wikipedia.org/wiki/Bottle_garden", "https://www.snopes.com/fact-check/self-sustaining-bottle-garden-1960/"],
-      "confidence": "low"
+    "kind": "vascular",
+    "form": "spikemoss"
+   }
+  },
+  {
+   "id": "pteris",
+   "name": "봉의꼬리 (소형 양치)",
+   "latin": "Pteris cretica",
+   "group": "plant",
+   "model": "individual",
+   "milestone": "M2",
+   "params": {},
+   "facts": "뿌리줄기에서 잎(엽상체)이 올라오는 소형 양치. 포자로 번식.",
+   "sources": [],
+   "confidence": "low",
+   "sim": {
+    "g0": 0.01,
+    "tWidth": 10,
+    "mycorrhizal": true,
+    "waterStore": 0.2,
+    "rotSusceptibility": 1.0,
+    "cam": false,
+    "leafLife": 365,
+    "amax25": 5,
+    "tOpt": 22,
+    "tMax": 32,
+    "g1": 4.0,
+    "lma": 0.012,
+    "alloc": [
+     0.5,
+     0.2,
+     0.3
+    ],
+    "cn": [
+     22,
+     60,
+     40
+    ],
+    "psiClose": -120,
+    "psiWilt": -200,
+    "maxHeight": 0.2,
+    "maxLeafArea": 0.04,
+    "lightMin": 30,
+    "lightMax": 400,
+    "rhMin": 0.5,
+    "init": {
+     "leafC": 0.00012,
+     "stemC": 5e-05,
+     "rootC": 8e-05
     },
-    {
-      "id": "folsomia",
-      "name": "톡토기",
-      "latin": "Folsomia candida",
-      "group": "microarthropod",
-      "model": "cohort",
-      "milestone": "M4",
-      "params": { "tOpt": 23, "eggDays21C": 7, "maturityDays21C": 21, "lifespanDays15C": 240, "lifespanDays26C": 72, "eggsLifetime15C": 2355, "eggsLifetime26C": 209, "rhPreferred": [0.85, 0.95], "rhMin": 0.7, "parthenogenetic": true, "diet": ["fungi", "detritus"] },
-      "facts": "곰팡이 균사를 먹어 곰팡이 폭발을 억제하는 핵심 청소부. 서늘할수록 오래 살고 알을 더 많이 낳음.",
-      "sources": ["https://en.wikipedia.org/wiki/Folsomia_candida", "https://www.sciencedirect.com/science/article/pii/S0031405622015591", "https://mesofauna.com/species-profiles/springtail-species-profiles/folsomia-candida/"],
-      "confidence": "high"
+    "kind": "vascular",
+    "form": "fern"
+   }
+  },
+  {
+   "id": "tradescantia",
+   "name": "트라데스칸티아 (스파이더워트)",
+   "latin": "Tradescantia spp.",
+   "group": "plant",
+   "model": "individual",
+   "milestone": "M2",
+   "params": {
+    "lightCompensation": 10,
+    "lightSaturation": 400,
+    "tOpt": 22,
+    "medlynG1": 4.0,
+    "g0": 0.01,
+    "q10Resp": 2.0
+   },
+   "facts": "David Latimer의 병 정원(1960~) 주인공. 빛이 부족하면 웃자람이 뚜렷함.",
+   "sources": [
+    "https://en.wikipedia.org/wiki/Bottle_garden",
+    "https://www.snopes.com/fact-check/self-sustaining-bottle-garden-1960/"
+   ],
+   "confidence": "low",
+   "sim": {
+    "g0": 0.01,
+    "tWidth": 10,
+    "mycorrhizal": true,
+    "waterStore": 0.2,
+    "rotSusceptibility": 1.0,
+    "cam": false,
+    "leafLife": 240,
+    "amax25": 9,
+    "tOpt": 24,
+    "tMax": 36,
+    "g1": 4.0,
+    "lma": 0.01,
+    "alloc": [
+     0.5,
+     0.3,
+     0.2
+    ],
+    "cn": [
+     20,
+     50,
+     40
+    ],
+    "psiClose": -120,
+    "psiWilt": -200,
+    "maxHeight": 0.15,
+    "maxLeafArea": 0.05,
+    "lightMin": 40,
+    "lightMax": 800,
+    "rhMin": 0.3,
+    "init": {
+     "leafC": 0.0001,
+     "stemC": 6e-05,
+     "rootC": 5e-05
     },
-    {
-      "id": "trichorhina",
-      "name": "꼬마흰쥐며느리",
-      "latin": "Trichorhina tomentosa",
-      "group": "isopod",
-      "model": "cohort",
-      "milestone": "M4",
-      "params": { "tRange": [21, 29], "broodSize": [5, 15], "parthenogenetic": true, "rhMin": 0.8, "diet": ["detritus", "fungi"] },
-      "facts": "암컷만 존재하는 단위생식 종. 소형 밀폐 테라리움에 적합.",
-      "sources": ["https://en.wikipedia.org/wiki/Trichorhina_tomentosa", "https://invertkeeping.com/dwarf-white-isopod-care/"],
-      "confidence": "medium"
+    "kind": "vascular",
+    "form": "trailing"
+   }
+  },
+  {
+   "id": "ficus",
+   "name": "푸밀라",
+   "latin": "Ficus pumila",
+   "group": "plant",
+   "model": "individual",
+   "milestone": "M2",
+   "params": {},
+   "facts": "공기뿌리로 유리나 돌에 붙어 기어오르는 덩굴 무화과.",
+   "sources": [],
+   "confidence": "low",
+   "sim": {
+    "g0": 0.01,
+    "tWidth": 10,
+    "mycorrhizal": true,
+    "waterStore": 0.2,
+    "rotSusceptibility": 1.0,
+    "cam": false,
+    "leafLife": 365,
+    "amax25": 6,
+    "tOpt": 24,
+    "tMax": 35,
+    "g1": 4.0,
+    "lma": 0.012,
+    "alloc": [
+     0.45,
+     0.35,
+     0.2
+    ],
+    "cn": [
+     22,
+     55,
+     40
+    ],
+    "psiClose": -150,
+    "psiWilt": -250,
+    "maxHeight": 0.25,
+    "maxLeafArea": 0.04,
+    "lightMin": 30,
+    "lightMax": 600,
+    "rhMin": 0.35,
+    "init": {
+     "leafC": 8e-05,
+     "stemC": 5e-05,
+     "rootC": 4e-05
     },
-    {
-      "id": "porcellio",
-      "name": "쥐며느리",
-      "latin": "Porcellio scaber",
-      "group": "isopod",
-      "model": "agent",
-      "milestone": "M4",
-      "params": { "lifespanDays": [730, 1095], "broodDays": [8, 20], "tBreeding": [18, 24], "metabolicRateUlO2PerGh": [148, 772], "metabolicRateTempRange": [15, 35], "photophobic": true, "diet": ["detritus", "carrion"] },
-      "facts": "빛을 피하고 좁은 틈에서 수분 손실을 줄임. 저산소에서는 더 서늘한 곳을 찾아감.",
-      "sources": ["https://en.wikipedia.org/wiki/Porcellio_scaber", "https://www.ncbi.nlm.nih.gov/pmc/articles/PMC6675064/", "https://www.sciencedirect.com/science/article/abs/pii/S0140196318312084"],
-      "confidence": "medium"
+    "kind": "vascular",
+    "form": "climber"
+   }
+  },
+  {
+   "id": "peperomia",
+   "name": "페페로미아",
+   "latin": "Peperomia prostrata",
+   "group": "plant",
+   "model": "individual",
+   "milestone": "M2",
+   "params": {},
+   "facts": "다육질 잎에 물을 저장. 가뭄엔 강하지만 과습하면 뿌리가 쉽게 썩음.",
+   "sources": [],
+   "confidence": "low",
+   "sim": {
+    "g0": 0.01,
+    "tWidth": 10,
+    "mycorrhizal": true,
+    "waterStore": 2.0,
+    "rotSusceptibility": 2.0,
+    "cam": false,
+    "leafLife": 365,
+    "amax25": 4,
+    "tOpt": 24,
+    "tMax": 35,
+    "g1": 3.5,
+    "lma": 0.02,
+    "alloc": [
+     0.6,
+     0.2,
+     0.2
+    ],
+    "cn": [
+     25,
+     50,
+     40
+    ],
+    "psiClose": -200,
+    "psiWilt": -300,
+    "maxHeight": 0.05,
+    "maxLeafArea": 0.015,
+    "lightMin": 30,
+    "lightMax": 500,
+    "rhMin": 0.3,
+    "init": {
+     "leafC": 6e-05,
+     "stemC": 2e-05,
+     "rootC": 2e-05
     },
-    {
-      "id": "oxidus",
-      "name": "온실노래기",
-      "latin": "Oxidus gracilis",
-      "group": "millipede",
-      "model": "agent",
-      "milestone": "M4",
-      "params": { "feedingFractionPerDay": [0.01, 0.05], "maturityDays": [180, 210], "needsCalcium": true, "diet": ["detritus", "fungi", "carrion"] },
-      "facts": "탈피할 때마다 체절이 늘어남. 칼슘을 긁어 먹음.",
-      "sources": ["https://en.wikipedia.org/wiki/Greenhouse_millipede", "https://besjournals.onlinelibrary.wiley.com/doi/10.1111/1365-2435.14520"],
-      "confidence": "medium"
+    "kind": "vascular",
+    "form": "succulent"
+   }
+  },
+  {
+   "id": "haworthia",
+   "name": "하월시아",
+   "latin": "Haworthia fasciata",
+   "group": "plant",
+   "model": "individual",
+   "milestone": "M7",
+   "params": {},
+   "facts": "CAM 광합성으로 밤에 기공을 열어 물을 아낌. 밀폐 습식 테라리움에서는 썩기 쉬움 — 건조형(개방) 테라리움용.",
+   "sources": [],
+   "confidence": "low",
+   "sim": {
+    "g0": 0.01,
+    "tWidth": 10,
+    "mycorrhizal": true,
+    "waterStore": 20,
+    "rotSusceptibility": 3.0,
+    "cam": true,
+    "leafLife": 700,
+    "amax25": 3,
+    "tOpt": 26,
+    "tMax": 42,
+    "g1": 2.0,
+    "lma": 0.05,
+    "alloc": [
+     0.6,
+     0.1,
+     0.3
+    ],
+    "cn": [
+     30,
+     50,
+     40
+    ],
+    "psiClose": -300,
+    "psiWilt": -600,
+    "maxHeight": 0.08,
+    "maxLeafArea": 0.02,
+    "lightMin": 100,
+    "lightMax": 1400,
+    "rhMin": 0.05,
+    "init": {
+     "leafC": 0.0003,
+     "stemC": 3e-05,
+     "rootC": 6e-05
     },
-    {
-      "id": "subulina",
-      "name": "유니콘달팽이",
-      "latin": "Subulina octona",
-      "group": "snail",
-      "model": "agent",
-      "milestone": "M4",
-      "params": { "selfFertilizing": true, "reproductiveSenescenceDays": 1370, "needsCalcium": true, "diet": ["detritus", "fungi", "biofilm"] },
-      "facts": "자가수정. 늙으면 번식을 멈춤. 유리의 바이오필름도 먹음.",
-      "sources": ["https://en.wikipedia.org/wiki/Subulina_octona"],
-      "confidence": "medium"
-    },
-    {
-      "id": "dendrobaena",
-      "name": "지렁이",
-      "latin": "Dendrobaena veneta",
-      "group": "earthworm",
-      "model": "agent",
-      "milestone": "M7",
-      "params": { "feedingFractionPerDay": 0.5, "tRange": [12, 25], "soilMoisturePreferred": [0.67, 0.84] },
-      "facts": "하루 체중의 절반까지 먹음. 대형 용기 전용.",
-      "sources": ["https://www.sciencedirect.com/science/article/abs/pii/0038071794901112", "https://www.sciencedirect.com/science/article/abs/pii/S0038071796000235"],
-      "confidence": "medium"
-    },
-    {
-      "id": "stratiolaelaps",
-      "name": "포식 응애",
-      "latin": "Stratiolaelaps scimitus",
-      "group": "predatory-mite",
-      "model": "cohort",
-      "milestone": "M4",
-      "params": { "preyPerDay": [1, 5], "tOpt": [15, 25], "generationDays": [13, 15], "generationDays20C": 18, "prey": ["bradysia-larva", "folsomia", "thrips-pupa"] },
-      "facts": "버섯파리 유충을 사냥하는 천적. 톡토기도 먹음.",
-      "sources": ["https://extension.psu.edu/all-about-stratiolaelaps-scimitus-hypoaspis-miles-predatory-mites", "https://en.wikipedia.org/wiki/Stratiolaelaps_scimitus"],
-      "confidence": "high"
-    },
-    {
-      "id": "bradysia",
-      "name": "버섯파리",
-      "latin": "Bradysia spp.",
-      "group": "pest-fly",
-      "model": "cohort",
-      "milestone": "M4",
-      "params": { "eggDays24C": 3, "larvaDays24C": 10, "pupaDays24C": 4, "adultLifeDays": [5, 7], "eggsPerFemale": [100, 150], "tOpt": [21, 24], "needsWetSoil": true },
-      "facts": "24 °C에서 알부터 성충까지 약 17일. 과습한 흙에서 폭증. 흙을 말리면 알·유충이 죽음.",
-      "sources": ["http://hort.cornell.edu/greenhouse/pests/pdfs/insects/FG.pdf", "https://www.umass.edu/agriculture-food-environment/greenhouse-floriculture/fact-sheets/fungus-gnats-shore-flies"],
-      "confidence": "high"
-    },
-    {
-      "id": "nematode-bacterivore",
-      "name": "세균식 선충",
-      "latin": "Rhabditida (functional group)",
-      "group": "microfauna",
-      "model": "pool",
-      "milestone": "M3",
-      "params": { "cnBody": 8, "diet": ["bacteria"] },
-      "facts": "세균을 먹고 남는 질소를 암모늄으로 배출해 식물 영양을 공급.",
-      "sources": ["https://www.ncbi.nlm.nih.gov/pmc/articles/PMC5358016/"],
-      "confidence": "medium"
-    },
-    {
-      "id": "protists",
-      "name": "원생생물",
-      "latin": "Amoebozoa, Ciliophora, flagellates",
-      "group": "microfauna",
-      "model": "pool",
-      "milestone": "M3",
-      "params": { "cnBody": 8, "diet": ["bacteria"] },
-      "facts": "미생물 고리: 세균 C:N(약 5)이 자기 요구량보다 낮아 여분의 N을 NH₄⁺로 배출.",
-      "sources": ["https://nph.onlinelibrary.wiley.com/doi/10.1111/j.1469-8137.2004.01066.x"],
-      "confidence": "medium"
-    },
-    {
-      "id": "saprotrophic-mold",
-      "name": "부생 곰팡이",
-      "latin": "Trichoderma spp. (functional group)",
-      "group": "fungus",
-      "model": "pool",
-      "milestone": "M3",
-      "params": { "tOpt": [25, 30], "rhCritical": 0.8, "cnBody": 12 },
-      "facts": "새 테라리움 초기에 흰 균사가 폭발했다가 톡토기가 늘면서 사라지는 게 전형적인 패턴.",
-      "sources": ["https://www.ncbi.nlm.nih.gov/pmc/articles/PMC12299077/", "https://www.sciencedirect.com/science/article/pii/S0360132321009756"],
-      "confidence": "medium"
-    },
-    {
-      "id": "leucocoprinus",
-      "name": "노란 버섯",
-      "latin": "Leucocoprinus birnbaumii",
-      "group": "fungus",
-      "model": "pool",
-      "milestone": "M4",
-      "params": { "tMin": 24, "rhMin": 0.9 },
-      "facts": "따뜻하고 습한 배양토에서 갑자기 나타나는 노란 버섯. 식물에는 무해.",
-      "sources": [],
-      "confidence": "low"
-    },
-    {
-      "id": "pythium",
-      "name": "뿌리썩음병균",
-      "latin": "Pythium spp.",
-      "group": "oomycete",
-      "model": "pool",
-      "milestone": "M3",
-      "params": { "trigger": "soil O2 low + stressed roots" },
-      "facts": "과습으로 흙에 산소가 부족할 때 약해진 뿌리를 침입.",
-      "sources": ["https://pmc.ncbi.nlm.nih.gov/articles/PMC13212243/", "https://hgic.clemson.edu/hot-topic/drying-up-root-and-crown-rot-pathogens/"],
-      "confidence": "medium"
-    },
-    {
-      "id": "nitrifiers",
-      "name": "질산화균",
-      "latin": "AOB/AOA + NOB",
-      "group": "bacteria",
-      "model": "pool",
-      "milestone": "M3",
-      "params": { "tOpt": 30, "tMin": 5, "tMax": 50, "kinetics": "first-order" },
-      "facts": "NH₄⁺ → NO₃⁻. 산소가 있고 따뜻할 때 빠름.",
-      "sources": ["https://crops.extension.iastate.edu/encyclopedia/remember-50-degrees", "https://link.springer.com/article/10.1007/BF02183035"],
-      "confidence": "high"
-    },
-    {
-      "id": "sulfate-reducers",
-      "name": "황산염환원균",
-      "latin": "Desulfovibrio etc. (functional group)",
-      "group": "bacteria",
-      "model": "pool",
-      "milestone": "M3",
-      "params": { "redoxStage": 5 },
-      "facts": "물이 고인 배수층에서 H₂S(썩은 달걀 냄새)를 만들고 흙을 검게 변색.",
-      "sources": ["https://pubs.usgs.gov/sir/2006/5056/section4.html"],
-      "confidence": "high"
-    },
-    {
-      "id": "algae-glass",
-      "name": "유리 녹조막",
-      "latin": "green algae + cyanobacteria biofilm",
-      "group": "phototroph",
-      "model": "surface",
-      "milestone": "M4",
-      "params": { "needsWetSurface": true, "lightDriven": true },
-      "facts": "빛이 강하고 늘 젖어 있는 유리면에 먼저 생김.",
-      "sources": ["https://www.gcshop-sg.com/blogs/terrarium-plants/why-algae-appears-on-terrarium-glass", "https://en.wikipedia.org/wiki/Phototrophic_biofilm"],
-      "confidence": "low"
-    }
-  ]
+    "kind": "vascular",
+    "form": "succulent"
+   }
+  },
+  {
+   "id": "folsomia",
+   "name": "톡토기",
+   "latin": "Folsomia candida",
+   "group": "microarthropod",
+   "model": "cohort",
+   "milestone": "M4",
+   "params": {
+    "tOpt": 23,
+    "eggDays21C": 7,
+    "maturityDays21C": 21,
+    "lifespanDays15C": 240,
+    "lifespanDays26C": 72,
+    "eggsLifetime15C": 2355,
+    "eggsLifetime26C": 209,
+    "rhPreferred": [
+     0.85,
+     0.95
+    ],
+    "rhMin": 0.7,
+    "parthenogenetic": true,
+    "diet": [
+     "fungi",
+     "detritus"
+    ]
+   },
+   "facts": "곰팡이 균사를 먹어 곰팡이 폭발을 억제하는 핵심 청소부. 서늘할수록 오래 살고 알을 더 많이 낳음.",
+   "sources": [
+    "https://en.wikipedia.org/wiki/Folsomia_candida",
+    "https://www.sciencedirect.com/science/article/pii/S0031405622015591",
+    "https://mesofauna.com/species-profiles/springtail-species-profiles/folsomia-candida/"
+   ],
+   "confidence": "high",
+   "sim": {
+    "kind": "cohort",
+    "stages": [
+     {
+      "name": "알",
+      "tBase": 8,
+      "dd": 91,
+      "bodyC": 2e-10,
+      "feeds": false
+     },
+     {
+      "name": "유충",
+      "tBase": 8,
+      "dd": 273,
+      "bodyC": 6e-09,
+      "feeds": true
+     },
+     {
+      "name": "성충",
+      "tBase": 8,
+      "dd": 0,
+      "bodyC": 6e-09,
+      "feeds": true
+     }
+    ],
+    "diet": [
+     {
+      "food": "fungi",
+      "pref": 1.0
+     },
+     {
+      "food": "litter",
+      "pref": 0.3
+     },
+     {
+      "food": "bacteria",
+      "pref": 0.2
+     }
+    ],
+    "assim": 0.35,
+    "cn": 5.5,
+    "fecundity": [
+     [
+      10,
+      5
+     ],
+     [
+      15,
+      8
+     ],
+     [
+      21,
+      6
+     ],
+     [
+      26,
+      2.9
+     ],
+     [
+      30,
+      0.5
+     ]
+    ],
+    "lifespan": [
+     [
+      15,
+      240
+     ],
+     [
+      26,
+      72
+     ],
+     [
+      30,
+      40
+     ]
+    ],
+    "tMin": 2,
+    "tMax": 30,
+    "rhMin": 0.7,
+    "crowding": 60000,
+    "eggC": 2e-10,
+    "wetSoil": false
+   }
+  },
+  {
+   "id": "trichorhina",
+   "name": "꼬마흰쥐며느리",
+   "latin": "Trichorhina tomentosa",
+   "group": "isopod",
+   "model": "cohort",
+   "milestone": "M4",
+   "params": {
+    "tRange": [
+     21,
+     29
+    ],
+    "broodSize": [
+     5,
+     15
+    ],
+    "parthenogenetic": true,
+    "rhMin": 0.8,
+    "diet": [
+     "detritus",
+     "fungi"
+    ]
+   },
+   "facts": "암컷만 존재하는 단위생식 종. 소형 밀폐 테라리움에 적합.",
+   "sources": [
+    "https://en.wikipedia.org/wiki/Trichorhina_tomentosa",
+    "https://invertkeeping.com/dwarf-white-isopod-care/"
+   ],
+   "confidence": "medium",
+   "sim": {
+    "kind": "cohort",
+    "stages": [
+     {
+      "name": "육낭 속 알",
+      "tBase": 12,
+      "dd": 300,
+      "bodyC": 1.5e-09,
+      "feeds": false
+     },
+     {
+      "name": "유체",
+      "tBase": 12,
+      "dd": 720,
+      "bodyC": 3e-08,
+      "feeds": true
+     },
+     {
+      "name": "성체",
+      "tBase": 12,
+      "dd": 0,
+      "bodyC": 3e-08,
+      "feeds": true
+     }
+    ],
+    "diet": [
+     {
+      "food": "litter",
+      "pref": 1.0
+     },
+     {
+      "food": "fungi",
+      "pref": 0.6
+     }
+    ],
+    "assim": 0.25,
+    "cn": 5.5,
+    "fecundity": [
+     [
+      14,
+      0.05
+     ],
+     [
+      20,
+      0.25
+     ],
+     [
+      26,
+      0.35
+     ],
+     [
+      30,
+      0.1
+     ]
+    ],
+    "lifespan": [
+     [
+      15,
+      420
+     ],
+     [
+      26,
+      365
+     ],
+     [
+      30,
+      200
+     ]
+    ],
+    "tMin": 10,
+    "tMax": 31,
+    "rhMin": 0.8,
+    "crowding": 8000,
+    "eggC": 1.5e-09,
+    "wetSoil": false
+   }
+  },
+  {
+   "id": "porcellio",
+   "name": "쥐며느리",
+   "latin": "Porcellio scaber",
+   "group": "isopod",
+   "model": "agent",
+   "milestone": "M4",
+   "params": {
+    "lifespanDays": [
+     730,
+     1095
+    ],
+    "broodDays": [
+     8,
+     20
+    ],
+    "tBreeding": [
+     18,
+     24
+    ],
+    "metabolicRateUlO2PerGh": [
+     148,
+     772
+    ],
+    "metabolicRateTempRange": [
+     15,
+     35
+    ],
+    "photophobic": true,
+    "diet": [
+     "detritus",
+     "carrion"
+    ]
+   },
+   "facts": "빛을 피하고 좁은 틈에서 수분 손실을 줄임. 저산소에서는 더 서늘한 곳을 찾아감.",
+   "sources": [
+    "https://en.wikipedia.org/wiki/Porcellio_scaber",
+    "https://www.ncbi.nlm.nih.gov/pmc/articles/PMC6675064/",
+    "https://www.sciencedirect.com/science/article/abs/pii/S0140196318312084"
+   ],
+   "confidence": "medium",
+   "sim": {
+    "kind": "agent",
+    "adultC": 6e-06,
+    "hatchC": 1.5e-07,
+    "maturityDays": 120,
+    "lifespanDays": 900,
+    "broodSize": 25,
+    "broodInterval": 40,
+    "broodDays": 14,
+    "tOpt": 21,
+    "tMax": 33,
+    "rhMin": 0.6,
+    "assim": 0.2,
+    "cn": 5.5,
+    "diet": [
+     {
+      "food": "litter",
+      "pref": 1.0
+     },
+     {
+      "food": "fungi",
+      "pref": 0.3
+     }
+    ],
+    "speed": 0.02,
+    "photophobic": true,
+    "calcium": 0.5
+   }
+  },
+  {
+   "id": "oxidus",
+   "name": "온실노래기",
+   "latin": "Oxidus gracilis",
+   "group": "millipede",
+   "model": "agent",
+   "milestone": "M4",
+   "params": {
+    "feedingFractionPerDay": [
+     0.01,
+     0.05
+    ],
+    "maturityDays": [
+     180,
+     210
+    ],
+    "needsCalcium": true,
+    "diet": [
+     "detritus",
+     "fungi",
+     "carrion"
+    ]
+   },
+   "facts": "탈피할 때마다 체절이 늘어남. 칼슘을 긁어 먹음.",
+   "sources": [
+    "https://en.wikipedia.org/wiki/Greenhouse_millipede",
+    "https://besjournals.onlinelibrary.wiley.com/doi/10.1111/1365-2435.14520"
+   ],
+   "confidence": "medium",
+   "sim": {
+    "kind": "agent",
+    "adultC": 1e-05,
+    "hatchC": 1e-07,
+    "maturityDays": 200,
+    "lifespanDays": 700,
+    "broodSize": 60,
+    "broodInterval": 60,
+    "broodDays": 21,
+    "tOpt": 22,
+    "tMax": 32,
+    "rhMin": 0.7,
+    "assim": 0.15,
+    "cn": 5.5,
+    "diet": [
+     {
+      "food": "litter",
+      "pref": 1.0
+     },
+     {
+      "food": "fungi",
+      "pref": 0.4
+     }
+    ],
+    "speed": 0.03,
+    "photophobic": true,
+    "calcium": 0.8
+   }
+  },
+  {
+   "id": "subulina",
+   "name": "유니콘달팽이",
+   "latin": "Subulina octona",
+   "group": "snail",
+   "model": "agent",
+   "milestone": "M4",
+   "params": {
+    "selfFertilizing": true,
+    "reproductiveSenescenceDays": 1370,
+    "needsCalcium": true,
+    "diet": [
+     "detritus",
+     "fungi",
+     "biofilm"
+    ]
+   },
+   "facts": "자가수정. 늙으면 번식을 멈춤. 유리의 바이오필름도 먹음.",
+   "sources": [
+    "https://en.wikipedia.org/wiki/Subulina_octona"
+   ],
+   "confidence": "medium",
+   "sim": {
+    "kind": "agent",
+    "adultC": 5e-06,
+    "hatchC": 2e-07,
+    "maturityDays": 120,
+    "lifespanDays": 1370,
+    "broodSize": 5,
+    "broodInterval": 20,
+    "broodDays": 3,
+    "tOpt": 24,
+    "tMax": 32,
+    "rhMin": 0.8,
+    "assim": 0.3,
+    "cn": 5.5,
+    "diet": [
+     {
+      "food": "algae",
+      "pref": 1.0
+     },
+     {
+      "food": "fungi",
+      "pref": 0.7
+     },
+     {
+      "food": "litter",
+      "pref": 0.5
+     }
+    ],
+    "speed": 0.006,
+    "photophobic": false,
+    "calcium": 1.0
+   }
+  },
+  {
+   "id": "dendrobaena",
+   "name": "지렁이",
+   "latin": "Dendrobaena veneta",
+   "group": "earthworm",
+   "model": "agent",
+   "milestone": "M7",
+   "params": {
+    "feedingFractionPerDay": 0.5,
+    "tRange": [
+     12,
+     25
+    ],
+    "soilMoisturePreferred": [
+     0.67,
+     0.84
+    ]
+   },
+   "facts": "하루 체중의 절반까지 먹음. 대형 용기 전용.",
+   "sources": [
+    "https://www.sciencedirect.com/science/article/abs/pii/0038071794901112",
+    "https://www.sciencedirect.com/science/article/abs/pii/S0038071796000235"
+   ],
+   "confidence": "medium",
+   "sim": {
+    "kind": "agent",
+    "adultC": 0.0001,
+    "hatchC": 2e-06,
+    "maturityDays": 90,
+    "lifespanDays": 1500,
+    "broodSize": 2,
+    "broodInterval": 7,
+    "broodDays": 40,
+    "tOpt": 18,
+    "tMax": 27,
+    "rhMin": 0.0,
+    "assim": 0.1,
+    "cn": 5.0,
+    "diet": [
+     {
+      "food": "soilorganic",
+      "pref": 1.0
+     },
+     {
+      "food": "litter",
+      "pref": 0.8
+     }
+    ],
+    "speed": 0.01,
+    "photophobic": true,
+    "calcium": 0.0,
+    "burrows": true
+   }
+  },
+  {
+   "id": "stratiolaelaps",
+   "name": "포식 응애",
+   "latin": "Stratiolaelaps scimitus",
+   "group": "predatory-mite",
+   "model": "cohort",
+   "milestone": "M4",
+   "params": {
+    "preyPerDay": [
+     1,
+     5
+    ],
+    "tOpt": [
+     15,
+     25
+    ],
+    "generationDays": [
+     13,
+     15
+    ],
+    "generationDays20C": 18,
+    "prey": [
+     "bradysia-larva",
+     "folsomia",
+     "thrips-pupa"
+    ]
+   },
+   "facts": "버섯파리 유충을 사냥하는 천적. 톡토기도 먹음.",
+   "sources": [
+    "https://extension.psu.edu/all-about-stratiolaelaps-scimitus-hypoaspis-miles-predatory-mites",
+    "https://en.wikipedia.org/wiki/Stratiolaelaps_scimitus"
+   ],
+   "confidence": "high",
+   "sim": {
+    "kind": "cohort",
+    "stages": [
+     {
+      "name": "알",
+      "tBase": 10,
+      "dd": 30,
+      "bodyC": 3e-10,
+      "feeds": false
+     },
+     {
+      "name": "약충",
+      "tBase": 10,
+      "dd": 120,
+      "bodyC": 3e-09,
+      "feeds": true
+     },
+     {
+      "name": "성충",
+      "tBase": 10,
+      "dd": 0,
+      "bodyC": 3e-09,
+      "feeds": true
+     }
+    ],
+    "diet": [
+     {
+      "food": "prey:bradysia",
+      "pref": 1.0
+     },
+     {
+      "food": "prey:folsomia",
+      "pref": 0.4
+     },
+     {
+      "food": "prey:scatella",
+      "pref": 0.8
+     }
+    ],
+    "assim": 0.8,
+    "cn": 5.0,
+    "maxPrey": 5,
+    "fecundity": [
+     [
+      12,
+      0.5
+     ],
+     [
+      20,
+      2.5
+     ],
+     [
+      25,
+      3
+     ],
+     [
+      30,
+      1
+     ]
+    ],
+    "lifespan": [
+     [
+      15,
+      60
+     ],
+     [
+      26,
+      30
+     ],
+     [
+      30,
+      20
+     ]
+    ],
+    "tMin": 8,
+    "tMax": 32,
+    "rhMin": 0.75,
+    "crowding": 20000,
+    "eggC": 3e-10,
+    "wetSoil": false
+   }
+  },
+  {
+   "id": "bradysia",
+   "name": "버섯파리",
+   "latin": "Bradysia spp.",
+   "group": "pest-fly",
+   "model": "cohort",
+   "milestone": "M4",
+   "params": {
+    "eggDays24C": 3,
+    "larvaDays24C": 10,
+    "pupaDays24C": 4,
+    "adultLifeDays": [
+     5,
+     7
+    ],
+    "eggsPerFemale": [
+     100,
+     150
+    ],
+    "tOpt": [
+     21,
+     24
+    ],
+    "needsWetSoil": true
+   },
+   "facts": "24 °C에서 알부터 성충까지 약 17일. 과습한 흙에서 폭증. 흙을 말리면 알·유충이 죽음.",
+   "sources": [
+    "http://hort.cornell.edu/greenhouse/pests/pdfs/insects/FG.pdf",
+    "https://www.umass.edu/agriculture-food-environment/greenhouse-floriculture/fact-sheets/fungus-gnats-shore-flies"
+   ],
+   "confidence": "high",
+   "sim": {
+    "kind": "cohort",
+    "stages": [
+     {
+      "name": "알",
+      "tBase": 9,
+      "dd": 45,
+      "bodyC": 2e-10,
+      "feeds": false
+     },
+     {
+      "name": "유충",
+      "tBase": 9,
+      "dd": 150,
+      "bodyC": 5e-08,
+      "feeds": true
+     },
+     {
+      "name": "번데기",
+      "tBase": 9,
+      "dd": 60,
+      "bodyC": 4e-08,
+      "feeds": false
+     },
+     {
+      "name": "성충",
+      "tBase": 9,
+      "dd": 0,
+      "bodyC": 3e-08,
+      "feeds": false
+     }
+    ],
+    "diet": [
+     {
+      "food": "fungi",
+      "pref": 1.0
+     },
+     {
+      "food": "litter",
+      "pref": 0.5
+     },
+     {
+      "food": "roots",
+      "pref": 0.15
+     }
+    ],
+    "assim": 0.4,
+    "cn": 5.5,
+    "fecundity": [
+     [
+      12,
+      5
+     ],
+     [
+      18,
+      18
+     ],
+     [
+      24,
+      21
+     ],
+     [
+      30,
+      8
+     ]
+    ],
+    "lifespan": [
+     [
+      15,
+      8
+     ],
+     [
+      24,
+      6
+     ],
+     [
+      30,
+      4
+     ]
+    ],
+    "tMin": 8,
+    "tMax": 32,
+    "rhMin": 0.6,
+    "crowding": 30000,
+    "eggC": 2e-10,
+    "wetSoil": true
+   }
+  },
+  {
+   "id": "scatella",
+   "name": "물가파리",
+   "latin": "Scatella stagnalis",
+   "group": "pest-fly",
+   "model": "cohort",
+   "milestone": "M4",
+   "params": {},
+   "facts": "유충이 흙 표면과 유리의 조류를 먹음. 조류가 많고 늘 젖어 있으면 발생.",
+   "sources": [
+    "https://www.umass.edu/agriculture-food-environment/greenhouse-floriculture/fact-sheets/fungus-gnats-shore-flies"
+   ],
+   "confidence": "medium",
+   "sim": {
+    "kind": "cohort",
+    "stages": [
+     {
+      "name": "알",
+      "tBase": 9,
+      "dd": 40,
+      "bodyC": 2e-10,
+      "feeds": false
+     },
+     {
+      "name": "유충",
+      "tBase": 9,
+      "dd": 110,
+      "bodyC": 5e-08,
+      "feeds": true
+     },
+     {
+      "name": "번데기",
+      "tBase": 9,
+      "dd": 60,
+      "bodyC": 4e-08,
+      "feeds": false
+     },
+     {
+      "name": "성충",
+      "tBase": 9,
+      "dd": 0,
+      "bodyC": 3e-08,
+      "feeds": false
+     }
+    ],
+    "diet": [
+     {
+      "food": "algae",
+      "pref": 1.0
+     }
+    ],
+    "assim": 0.4,
+    "cn": 5.5,
+    "fecundity": [
+     [
+      12,
+      5
+     ],
+     [
+      20,
+      15
+     ],
+     [
+      26,
+      18
+     ],
+     [
+      30,
+      6
+     ]
+    ],
+    "lifespan": [
+     [
+      15,
+      10
+     ],
+     [
+      24,
+      7
+     ],
+     [
+      30,
+      4
+     ]
+    ],
+    "tMin": 8,
+    "tMax": 32,
+    "rhMin": 0.6,
+    "crowding": 20000,
+    "eggC": 2e-10,
+    "wetSoil": true
+   }
+  },
+  {
+   "id": "nematode-bacterivore",
+   "name": "세균식 선충",
+   "latin": "Rhabditida (functional group)",
+   "group": "microfauna",
+   "model": "pool",
+   "milestone": "M3",
+   "params": {
+    "cnBody": 8,
+    "diet": [
+     "bacteria"
+    ]
+   },
+   "facts": "세균을 먹고 남는 질소를 암모늄으로 배출해 식물 영양을 공급.",
+   "sources": [
+    "https://www.ncbi.nlm.nih.gov/pmc/articles/PMC5358016/"
+   ],
+   "confidence": "medium"
+  },
+  {
+   "id": "protists",
+   "name": "원생생물",
+   "latin": "Amoebozoa, Ciliophora, flagellates",
+   "group": "microfauna",
+   "model": "pool",
+   "milestone": "M3",
+   "params": {
+    "cnBody": 8,
+    "diet": [
+     "bacteria"
+    ]
+   },
+   "facts": "미생물 고리: 세균 C:N(약 5)이 자기 요구량보다 낮아 여분의 N을 NH₄⁺로 배출.",
+   "sources": [
+    "https://nph.onlinelibrary.wiley.com/doi/10.1111/j.1469-8137.2004.01066.x"
+   ],
+   "confidence": "medium"
+  },
+  {
+   "id": "saprotrophic-mold",
+   "name": "부생 곰팡이",
+   "latin": "Trichoderma spp. (functional group)",
+   "group": "fungus",
+   "model": "pool",
+   "milestone": "M3",
+   "params": {
+    "tOpt": [
+     25,
+     30
+    ],
+    "rhCritical": 0.8,
+    "cnBody": 12
+   },
+   "facts": "새 테라리움 초기에 흰 균사가 폭발했다가 톡토기가 늘면서 사라지는 게 전형적인 패턴.",
+   "sources": [
+    "https://www.ncbi.nlm.nih.gov/pmc/articles/PMC12299077/",
+    "https://www.sciencedirect.com/science/article/pii/S0360132321009756"
+   ],
+   "confidence": "medium"
+  },
+  {
+   "id": "leucocoprinus",
+   "name": "노란 버섯",
+   "latin": "Leucocoprinus birnbaumii",
+   "group": "fungus",
+   "model": "pool",
+   "milestone": "M4",
+   "params": {
+    "tMin": 24,
+    "rhMin": 0.9
+   },
+   "facts": "따뜻하고 습한 배양토에서 갑자기 나타나는 노란 버섯. 식물에는 무해.",
+   "sources": [],
+   "confidence": "low"
+  },
+  {
+   "id": "botrytis",
+   "name": "회색곰팡이",
+   "latin": "Botrytis cinerea",
+   "group": "fungus",
+   "model": "pool",
+   "milestone": "M4",
+   "params": {
+    "rhMin": 0.93,
+    "tOpt": [
+     15,
+     22
+    ]
+   },
+   "facts": "서늘하고 습할 때 죽은 잎에서 자라 약해진 살아 있는 잎으로 번짐.",
+   "sources": [],
+   "confidence": "low"
+  },
+  {
+   "id": "physarum",
+   "name": "점균 (황색망사점균)",
+   "latin": "Physarum polycephalum",
+   "group": "protist",
+   "model": "pool",
+   "milestone": "M4",
+   "params": {
+    "rhMin": 0.9,
+    "tRange": [
+     18,
+     28
+    ]
+   },
+   "facts": "세균을 먹으며 노란 그물 모양으로 기어 다니는 아메바성 원생생물. 마르면 휴면체로 변함.",
+   "sources": [],
+   "confidence": "low"
+  },
+  {
+   "id": "pythium",
+   "name": "뿌리썩음병균",
+   "latin": "Pythium spp.",
+   "group": "oomycete",
+   "model": "pool",
+   "milestone": "M3",
+   "params": {
+    "trigger": "soil O2 low + stressed roots"
+   },
+   "facts": "과습으로 흙에 산소가 부족할 때 약해진 뿌리를 침입.",
+   "sources": [
+    "https://pmc.ncbi.nlm.nih.gov/articles/PMC13212243/",
+    "https://hgic.clemson.edu/hot-topic/drying-up-root-and-crown-rot-pathogens/"
+   ],
+   "confidence": "medium"
+  },
+  {
+   "id": "amf",
+   "name": "균근균",
+   "latin": "Glomeromycota",
+   "group": "fungus",
+   "model": "pool",
+   "milestone": "M3",
+   "params": {
+    "carbonCost": [
+     0.03,
+     0.2
+    ]
+   },
+   "facts": "식물 뿌리와 공생: 광합성 산물 3–20%를 받고 양분 흡수를 돕는다.",
+   "sources": [
+    "https://pmc.ncbi.nlm.nih.gov/articles/PMC13306546/"
+   ],
+   "confidence": "medium"
+  },
+  {
+   "id": "nitrifiers",
+   "name": "질산화균",
+   "latin": "AOB/AOA + NOB",
+   "group": "bacteria",
+   "model": "pool",
+   "milestone": "M3",
+   "params": {
+    "tOpt": 30,
+    "tMin": 5,
+    "tMax": 50,
+    "kinetics": "first-order"
+   },
+   "facts": "NH₄⁺ → NO₃⁻. 산소가 있고 따뜻할 때 빠름.",
+   "sources": [
+    "https://crops.extension.iastate.edu/encyclopedia/remember-50-degrees",
+    "https://link.springer.com/article/10.1007/BF02183035"
+   ],
+   "confidence": "high"
+  },
+  {
+   "id": "sulfate-reducers",
+   "name": "황산염환원균",
+   "latin": "Desulfovibrio etc. (functional group)",
+   "group": "bacteria",
+   "model": "pool",
+   "milestone": "M3",
+   "params": {
+    "redoxStage": 5
+   },
+   "facts": "물이 고인 배수층에서 H₂S(썩은 달걀 냄새)를 만들고 흙을 검게 변색.",
+   "sources": [
+    "https://pubs.usgs.gov/sir/2006/5056/section4.html"
+   ],
+   "confidence": "high"
+  },
+  {
+   "id": "algae-glass",
+   "name": "유리 녹조막",
+   "latin": "green algae + cyanobacteria biofilm",
+   "group": "phototroph",
+   "model": "surface",
+   "milestone": "M4",
+   "params": {
+    "needsWetSurface": true,
+    "lightDriven": true
+   },
+   "facts": "빛이 강하고 늘 젖어 있는 유리면에 먼저 생김.",
+   "sources": [
+    "https://www.gcshop-sg.com/blogs/terrarium-plants/why-algae-appears-on-terrarium-glass",
+    "https://en.wikipedia.org/wiki/Phototrophic_biofilm"
+   ],
+   "confidence": "low"
+  }
+ ]
 }

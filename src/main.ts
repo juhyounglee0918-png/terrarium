@@ -127,7 +127,7 @@ roomInput.addEventListener('input', () => {
 });
 $('act-reset').addEventListener('click', () => {
   history = [];
-  act({ kind: 'reset' });
+  act({ kind: 'newGame', preset: 'tropical' });
 });
 $('toggle-sensors').addEventListener('click', () => $('sensors').classList.toggle('closed'));
 if (window.matchMedia('(max-width: 760px)').matches) $('sensors').classList.add('closed');

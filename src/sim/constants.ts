@@ -26,3 +26,6 @@ export const PAR_FRACTION_OF_SHORTWAVE = 0.45;
 export const PAR_UMOL_PER_J_LED = 4.6;
 
 export const SECONDS_PER_DAY = 86400;
+
+export const C_MOLAR = 0.012011; // kg C per mol
+export const N_MOLAR = 0.014007; // kg N per mol

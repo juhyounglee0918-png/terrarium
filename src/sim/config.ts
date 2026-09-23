@@ -24,6 +24,31 @@ export interface RoomClimate {
   dailyAmplitude: number; // °C, half peak-to-peak; minimum at ~06:00
   rh: number; // 0..1
   co2ppm: number;
+  /** Scale of the seasonal indoor temperature swing (0 = none, 1 ≈ ±2.5 °C). */
+  seasonal?: number;
+}
+
+export interface Hardscape {
+  x: number; // m from jar centre (east)
+  z: number; // m from jar centre (south)
+  size: number; // m, rough radius
+  limestone?: boolean; // releases calcium for snails and millipedes
+}
+
+export interface PlantSpec {
+  species: string;
+  x: number;
+  z: number;
+}
+
+export interface MossSpec {
+  species: string;
+  fraction: number; // share of free surface covered at start
+}
+
+export interface FaunaSpec {
+  species: string;
+  count: number;
 }
 
 export interface TerrariumConfig {
@@ -42,6 +67,16 @@ export interface TerrariumConfig {
   glassSectors: number;
   /** Simulation step (s). */
   dt: number;
+  /** Biology step (s); slow processes (growth, populations, decomposition). */
+  bioDt: number;
+  hardscape: Hardscape[];
+  plants: PlantSpec[];
+  moss: MossSpec[];
+  fauna: FaunaSpec[];
+  /** Fresh leaf litter placed on the surface at setup (kg C). */
+  initialLitterC: number;
+  /** Random events (heatwaves, power cuts, gnats flying in). */
+  events: boolean;
 }
 
 export const MATERIALS: Record<string, SoilMaterial> = Object.fromEntries(
@@ -74,5 +109,33 @@ export function defaultConfig(): TerrariumConfig {
     glassBands: 8,
     glassSectors: 12,
     dt: 60,
+    bioDt: 600,
+    hardscape: [
+      { x: -0.045, z: 0.03, size: 0.038 },
+      { x: 0.05, z: -0.035, size: 0.024 },
+      { x: 0.015, z: 0.06, size: 0.016 },
+    ],
+    plants: [
+      { species: 'fittonia', x: -0.02, z: -0.045 },
+      { species: 'pteris', x: 0.055, z: 0.04 },
+      { species: 'selaginella', x: -0.07, z: -0.02 },
+      { species: 'pilea', x: 0.02, z: 0.0 },
+    ],
+    moss: [
+      { species: 'hypnum', fraction: 0.35 },
+      { species: 'leucobryum', fraction: 0.08 },
+    ],
+    fauna: [
+      { species: 'folsomia', count: 300 },
+      { species: 'trichorhina', count: 25 },
+    ],
+    initialLitterC: 0.0008,
+    events: true,
   };
+}
+
+/** Physics-only jar: no organisms, no fresh litter (used by M1 tests). */
+export function bareConfig(): TerrariumConfig {
+  const c = defaultConfig();
+  return { ...c, plants: [], moss: [], fauna: [], initialLitterC: 0, events: false, room: { ...c.room, seasonal: 0 } };
 }

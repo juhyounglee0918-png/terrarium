@@ -191,3 +191,195 @@ export function dropletTexture(size = 1024): THREE.DataTexture {
   t.needsUpdate = true;
   return t;
 }
+
+// ---------------------------------------------------------------- leaves
+
+export interface LeafStyle {
+  base: string; // blade colour
+  edge?: string;
+  vein: string;
+  veinWidth: number;
+  network: number; // 0 = pinnate only, 1 = dense reticulate (Fittonia)
+  shape: 'ovate' | 'round' | 'lance' | 'heart' | 'pinna' | 'scale' | 'succulent';
+  stripes?: string; // longitudinal stripes (Tradescantia) or bands (Haworthia)
+  speckle?: string;
+}
+
+/** Leaf blade with alpha outline and veins. Texture v runs from petiole (0) to tip (1). */
+export function leafTexture(style: LeafStyle, seed = 1): THREE.CanvasTexture {
+  const W = 256;
+  const H = 512;
+  const c = document.createElement('canvas');
+  c.width = W;
+  c.height = H;
+  const g = c.getContext('2d')!;
+  const rnd = makeRandom(seed);
+  const outline = new Path2D();
+  const cx = W / 2;
+  const widthAt = (t: number): number => {
+    switch (style.shape) {
+      case 'round':
+        return Math.sin(Math.PI * Math.min(1, t * 1.05)) * 0.95 + 0.05;
+      case 'lance':
+        return Math.pow(Math.sin(Math.PI * t), 0.9) * 0.55 * (1 - t * 0.3);
+      case 'heart':
+        return (Math.sin(Math.PI * t) * 0.8 + (t < 0.25 ? 0.25 * (1 - t / 0.25) : 0)) * (1 - t * 0.2);
+      case 'pinna':
+        return Math.min(1, t * 6) * (1 - Math.pow(t, 3)) * 0.35;
+      case 'scale':
+        return Math.sin(Math.PI * t) * 0.6;
+      case 'succulent':
+        return (1 - t) * 0.9 + 0.05;
+      default:
+        return Math.pow(Math.sin(Math.PI * Math.pow(t, 0.8)), 0.8) * 0.78;
+    }
+  };
+  outline.moveTo(cx, H - 2);
+  for (let i = 0; i <= 60; i++) {
+    const t = i / 60;
+    outline.lineTo(cx + widthAt(t) * (W / 2 - 4), H - 2 - t * (H - 6));
+  }
+  for (let i = 60; i >= 0; i--) {
+    const t = i / 60;
+    outline.lineTo(cx - widthAt(t) * (W / 2 - 4), H - 2 - t * (H - 6));
+  }
+  outline.closePath();
+  g.save();
+  g.clip(outline);
+  const grad = g.createLinearGradient(0, 0, W, 0);
+  grad.addColorStop(0, style.edge ?? style.base);
+  grad.addColorStop(0.5, style.base);
+  grad.addColorStop(1, style.edge ?? style.base);
+  g.fillStyle = grad;
+  g.fillRect(0, 0, W, H);
+  // Subtle mottling.
+  for (let i = 0; i < 600; i++) {
+    g.fillStyle = `rgba(${rnd() > 0.5 ? '255,255,255' : '0,0,0'},${0.02 + rnd() * 0.03})`;
+    g.beginPath();
+    g.arc(rnd() * W, rnd() * H, 2 + rnd() * 8, 0, Math.PI * 2);
+    g.fill();
+  }
+  if (style.stripes) {
+    g.strokeStyle = style.stripes;
+    for (let k = -3; k <= 3; k++) {
+      if (k === 0) continue;
+      g.lineWidth = 10 + rnd() * 10;
+      g.globalAlpha = 0.55;
+      g.beginPath();
+      if (style.shape === 'succulent') {
+        // Haworthia: transverse white tubercle bands.
+        for (let y = 20; y < H; y += 26 + rnd() * 10) {
+          g.lineWidth = 5;
+          g.beginPath();
+          g.moveTo(0, y);
+          g.lineTo(W, y + 6);
+          g.stroke();
+        }
+        break;
+      }
+      g.moveTo(cx + k * 22, H);
+      g.quadraticCurveTo(cx + k * 30, H / 2, cx + k * 6, 0);
+      g.stroke();
+    }
+    g.globalAlpha = 1;
+  }
+  if (style.speckle) {
+    g.fillStyle = style.speckle;
+    for (let i = 0; i < 90; i++) {
+      g.beginPath();
+      g.arc(rnd() * W, rnd() * H, 2 + rnd() * 3, 0, Math.PI * 2);
+      g.fill();
+    }
+  }
+  // Veins: midrib, secondary veins, optional reticulate network.
+  g.strokeStyle = style.vein;
+  g.lineCap = 'round';
+  if (style.shape !== 'succulent') {
+    g.lineWidth = style.veinWidth * 1.8;
+    g.beginPath();
+    g.moveTo(cx, H);
+    g.lineTo(cx, 8);
+    g.stroke();
+    const pairs = style.shape === 'pinna' ? 14 : 7;
+    for (let i = 1; i <= pairs; i++) {
+      const t = i / (pairs + 1);
+      const y = H - t * H;
+      const w = widthAt(t) * (W / 2 - 8);
+      for (const side of [-1, 1]) {
+        g.lineWidth = style.veinWidth;
+        g.beginPath();
+        g.moveTo(cx, y);
+        g.quadraticCurveTo(cx + side * w * 0.5, y - 20, cx + side * w * 0.95, y - 55 * (1 - t * 0.5));
+        g.stroke();
+      }
+    }
+    if (style.network > 0) {
+      g.lineWidth = style.veinWidth * 0.55;
+      for (let i = 0; i < 260 * style.network; i++) {
+        const x = rnd() * W;
+        const y = rnd() * H;
+        const a = rnd() * Math.PI;
+        const l = 10 + rnd() * 26;
+        g.beginPath();
+        g.moveTo(x, y);
+        g.lineTo(x + Math.cos(a) * l, y + Math.sin(a) * l);
+        g.stroke();
+      }
+    }
+  }
+  g.restore();
+  const t = new THREE.CanvasTexture(c);
+  t.colorSpace = THREE.SRGBColorSpace;
+  t.anisotropy = 8;
+  return t;
+}
+
+/** Fibrous bump map for moss cushions. */
+export function mossBumpTexture(): THREE.CanvasTexture {
+  const [c, g] = canvas(256);
+  const rnd = makeRandom(31);
+  g.fillStyle = '#808080';
+  g.fillRect(0, 0, 256, 256);
+  g.lineCap = 'round';
+  for (let i = 0; i < 2600; i++) {
+    const x = rnd() * 256;
+    const y = rnd() * 256;
+    const a = rnd() * Math.PI * 2;
+    const l = 3 + rnd() * 7;
+    const v = rnd() > 0.5 ? 220 : 40;
+    g.strokeStyle = `rgba(${v},${v},${v},0.35)`;
+    g.lineWidth = 0.8 + rnd();
+    g.beginPath();
+    g.moveTo(x, y);
+    g.lineTo(x + Math.cos(a) * l, y + Math.sin(a) * l);
+    g.stroke();
+  }
+  const t = toTexture(c, 3, false);
+  return t;
+}
+
+/** Soft radial puff for mould hyphae and haze sprites. */
+export function puffTexture(): THREE.CanvasTexture {
+  const [c, g] = canvas(128);
+  const rnd = makeRandom(17);
+  const grad = g.createRadialGradient(64, 64, 4, 64, 64, 62);
+  grad.addColorStop(0, 'rgba(255,255,255,0.9)');
+  grad.addColorStop(0.5, 'rgba(255,255,255,0.35)');
+  grad.addColorStop(1, 'rgba(255,255,255,0)');
+  g.fillStyle = grad;
+  g.fillRect(0, 0, 128, 128);
+  g.strokeStyle = 'rgba(255,255,255,0.5)';
+  for (let i = 0; i < 120; i++) {
+    const a = rnd() * Math.PI * 2;
+    const r0 = rnd() * 20;
+    const r1 = 30 + rnd() * 30;
+    g.lineWidth = 0.6;
+    g.beginPath();
+    g.moveTo(64 + Math.cos(a) * r0, 64 + Math.sin(a) * r0);
+    g.lineTo(64 + Math.cos(a + (rnd() - 0.5) * 0.4) * r1, 64 + Math.sin(a + (rnd() - 0.5) * 0.4) * r1);
+    g.stroke();
+  }
+  const t = new THREE.CanvasTexture(c);
+  t.colorSpace = THREE.SRGBColorSpace;
+  return t;
+}

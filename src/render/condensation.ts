@@ -144,7 +144,7 @@ export function filmTexture(sectors: number, bands: number): THREE.DataTexture {
   return t;
 }
 
-export function writeFilm(t: THREE.DataTexture, film: Float32Array): void {
+export function writeFilm(t: THREE.DataTexture, film: ArrayLike<number>): void {
   const data = t.image.data as Uint8Array;
   for (let i = 0; i < film.length; i++) data[i * 4] = Math.round(Math.min(1, Math.max(0, film[i])) * 255);
   t.needsUpdate = true;
