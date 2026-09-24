@@ -5,7 +5,7 @@ import { PRESETS } from './sim/presets';
 import { createView } from './render/scene';
 import { Chart } from './ui/chart';
 import type { Action, FrameData, FromWorker, HistorySample, ToWorker } from './worker/protocol';
-import SimWorker from './worker/sim.worker?worker';
+import SimWorker from './worker/sim.worker?worker&inline';
 
 const worker = new SimWorker();
 const send = (m: ToWorker) => worker.postMessage(m);
